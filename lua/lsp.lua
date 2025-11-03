@@ -1,4 +1,4 @@
-local servers = { "luals", "ts_ls", "clangd", "bashls", "astro-language-server", "gopls", "cssls", "html" }
+local servers = { "luals", "ts_ls", "clangd", "bashls", "astro-language-server", "gopls", "cssls", "html", "denols" }
 
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             vim.keymap.set("n", "gli", vim.lsp.buf.implementation, { buffer = args.buf })
         end
 
-        vim.keymap.set({ "n", "v", "x" }, "gbf", vim.lsp.buf.format, {})
+        vim.keymap.set({ "n", "v", "x" }, "<leader>lf", vim.lsp.buf.format, {})
     end
 })
 
@@ -40,6 +40,12 @@ vim.lsp.config["ts_ls"] = {
     filetypes = { "typescript", "javascript" },
     root_markers = { "node_modules/", "package.json", ".git" }
 }
+
+vim.lsp.config("denols", {
+    cmd = { "deno", "lsp" },
+    filetypes = { "javascript", "typescript" },
+    root_markers = { "deno.json", "deno.jsonc", "deno.lock" },
+})
 
 vim.lsp.config["clangd"] = {
     cmd = { "clangd" },
