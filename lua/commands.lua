@@ -136,11 +136,24 @@ M.white = function ()
     vim.cmd("%s/\t/    /g")
 end
 
+M.notes = function ()
+    vim.cmd("e ~/notes")
+    vim.cmd("cd ~/notes")
+end
+
+M.git = function (d)
+    local args = d.args
+
+    vim.cmd("!git " .. args)
+end
+
 vim.api.nvim_create_user_command("Cmd", M.run_command, { nargs = "*" })
 vim.api.nvim_create_user_command("T", M.run_command, { nargs = "*" })
 vim.api.nvim_create_user_command("Mp", M.man, { nargs = "*" })
 vim.api.nvim_create_user_command("License", M.get_license, {})
 vim.api.nvim_create_user_command("Gopher", M.gopher, {})
 vim.api.nvim_create_user_command("White", M.white, {})
+vim.api.nvim_create_user_command("Notes", M.notes, { nargs = "*" })
+vim.api.nvim_create_user_command("Git", M.git, { nargs = "*" })
 
 return M
