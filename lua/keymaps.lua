@@ -9,6 +9,11 @@ map("t", "<esc>", "<c-\\><c-n>")
 map("n", "<space>;", "q:", {})
 map("t", "<A-q>", "<esc><esc>bd<CR>")
 
+map("n", "<leader>b", ":b#<CR>")
+map("n", "<leader>n", ":bn<CR>")
+map("n", "<leader>B", ":bd<CR>")
+map("n", "<leader>ls", ":ls<CR>")
+
 map({"n", "v", "x", "c", "t"}, "<C-y>", '"+y', {})
 map({"n", "v", "x", "c", "t"}, "<C-p>", '"+p', {})
 map("i", "<C-p>", '<esc>"+pa')
@@ -61,7 +66,7 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 vim.api.nvim_create_autocmd("BufEnter", {
     pattern = { "c", "sh", "man" },
     callback = function ()
-        map("n", "K", function ()
+        map({"v", "x", "n"}, "K", function ()
             vim.cmd("Man " .. vim.fn.expand("<cword>"))
         end, { buffer = true })
     end
