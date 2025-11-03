@@ -13,4 +13,4 @@ blink
 oradark
 comment
 treesitter
-nvim-autopairs
+mini.pairs
