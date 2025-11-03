@@ -15,10 +15,14 @@ vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 vim.o.softtabstop = 4
 vim.o.expandtab = true
+vim.o.swapfile = false
 vim.o.showmode = false
 vim.o.cmdheight = 1
 vim.o.winborder = "rounded"
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
+
+vim.opt.iskeyword:remove("_")
 
 vim.opt.list = true
 vim.opt.listchars = {
