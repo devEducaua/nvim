@@ -39,9 +39,14 @@ map("n", "<leader>!", ":q!<CR>", {})
 map("n", "<leader>q", ":bd!<CR>", {})
 map("n", "<leader>s", ":w<CR>:so<CR>", {})
 
-map("n", "<leader>f", ":Telescope find_files<CR>")
-map("n", "<leader>tt", ":Telescope<CR>")
-map("n", "<leader>th", ":Telescope help_tags<CR>")
+map("n", "<leader>f", ":Pick files<CR>")
+map("n", "<leader>tt", ":Pick<CR>")
+map("n", "<leader>th", ":Pick help<CR>")
+map("n", "<leader>tb", ":Pick buffers<CR>")
+
+-- map("n", "<leader>f", ":Telescope find_files<CR>")
+-- map("n", "<leader>tt", ":Telescope<CR>")
+-- map("n", "<leader>th", ":Telescope help_tags<CR>")
 
 map("n", "-", "<cmd>Oil<CR>", {})
 
