@@ -20,9 +20,9 @@ bootstrap_pckr()
 local pckr = require("pckr")
 
 pckr.add{
-    { "~/proj/oradark.nvim", branch = "minimal" },
-
+    "~/proj/oradark.nvim",
     "nvim-mini/mini.pairs",
+    "nvim-mini/mini.pick",
     "numToStr/Comment.nvim",
     "williamboman/mason.nvim",
     "L3MON4D3/LuaSnip",
@@ -30,23 +30,6 @@ pckr.add{
     {
         "saghen/blink.cmp",
         requires = { "rafamadriz/friendly-snippets" },
-        config = function ()
-            require("blink.cmp").setup({
-                snippets = { preset = "luasnip" },
-                sources = {
-                    default = { "lsp", "path", "snippets", "buffer" }
-                },
-
-                keymap = {
-                    ['<CR>'] = { 'select_and_accept', 'fallback' },
-                    ['<S-Tab>'] = { 'select_prev', 'fallback' },
-                    ['<Tab>'] = { 'select_next', 'fallback' },
-                },
-
-                completion = { documentation = { auto_show = true }},
-                fuzzy = { implementation = "lua" }
-            })
-        end
     },
 
     {
@@ -81,20 +64,6 @@ pckr.add{
     {
         "nvim-treesitter/nvim-treesitter",
         run = ":TSUpdate",
-        config = function ()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = { "c", "lua", "bash", "typescript", "html", "css", "javascript", "astro", "markdown", "go", "python" },
-                sync_install = false,
-                auto_install = false,
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
-                },
-                indent = {
-                    enable = true,
-                },
-            })
-        end
     }
 }
 
@@ -102,8 +71,58 @@ require("snippets")
 require('mini.pairs').setup({})
 require("mason").setup()
 
-local commands = require("commands")
 
+require("mini.pick").setup({
+    options = {
+        content_from_bottom = false
+    },
+
+    window = {
+        config = function()
+            return {
+                col = 0,
+                row = vim.o.lines,
+                height = math.floor(vim.o.lines * 0.1),
+                width = vim.o.columns,
+                style = 'minimal',
+                border = "none",
+            }
+        end,
+
+        prompt_prefix = ' '
+    },
+})
+
+require("blink.cmp").setup({
+    snippets = { preset = "luasnip" },
+    sources = {
+        default = { "lsp", "path", "snippets", "buffer" }
+    },
+
+    keymap = {
+        ['<CR>'] = { 'select_and_accept', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<Tab>'] = { 'select_next', 'fallback' },
+    },
+
+    completion = { documentation = { auto_show = true }},
+    fuzzy = { implementation = "lua" }
+})
+
+require("nvim-treesitter.configs").setup({
+    ensure_installed = { "c", "lua", "bash", "typescript", "html", "css", "javascript", "astro", "markdown", "go", "python" },
+    sync_install = false,
+    auto_install = false,
+    highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = false,
+    },
+    indent = {
+        enable = true,
+    },
+})
+
+local commands = require("commands")
 require("oil").setup({
     default_file_explorer = true,
     skip_confirm_for_simple_edits = true,
