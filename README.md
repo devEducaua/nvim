@@ -11,7 +11,8 @@ this is my /comfy/ nvim setup.
 - blink
 - luasnip
 - oradark
-- comment
 - treesitter
 - mini.pairs
 - mini.pick
+- mini.git
+- mini.comment
