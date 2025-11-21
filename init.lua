@@ -2,7 +2,6 @@ require("lsp")
 require("keymaps")
 require("commands")
 require("plugins")
-require("compile")
 
 vim.cmd("set termguicolors")
 vim.cmd("syntax enable")

@@ -1,4 +1,3 @@
-
 require("snippets")
 require("mason").setup()
 
@@ -55,23 +54,6 @@ require("nvim-treesitter.configs").setup({
     },
 })
 
-
-require("telescope").setup({
-    file_ignore_patterns = { "^node_modules/" },
-    defaults = {
-        border = false,
-        prompt_position = "bottom",
-        layout_strategy = 'bottom_pane',
-        sorting_strategy = 'ascending',
-        results_title = false,
-        layout_config = {
-            width = 1,
-            height = 0.15,
-            preview_width = 0
-        },
-    }
-})
-
 local commands = require("commands")
 require("oil").setup({
     default_file_explorer = true,
@@ -108,26 +90,9 @@ require("oil").setup({
         },
 
         ["<space>r"] = {
-            desc = "run file executables or Makefiles",
             callback = function ()
                 local name = require("oil").get_cursor_entry().name
                 commands.exec_by_name(name)
-            end
-        },
-
-        ["<space>ga"] = {
-            desc = "stage file on git",
-            callback = function ()
-                local file = commands.get_path(require("oil").get_cursor_entry().name)
-                vim.fn.feedkeys(":Cmd git add " .. get_path(file), "nt")
-            end
-        },
-
-        ["<space>grm"] = {
-            desc = "remove file from git",
-            callback = function ()
-                local file = commands.get_path(require("oil").get_cursor_entry().name)
-                vim.fn.feedkeys(":Cmd git rm " .. get_path(file), "nt")
             end
         },
     },

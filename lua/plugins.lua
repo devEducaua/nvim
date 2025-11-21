@@ -30,7 +30,6 @@ pckr.add{
     "williamboman/mason.nvim",
     "L3MON4D3/LuaSnip",
 
-    { "nvim-telescope/telescope.nvim", requires = { 'nvim-lua/plenary.nvim' }},
     { "saghen/blink.cmp", requires = { "rafamadriz/friendly-snippets" }},
     { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
 
