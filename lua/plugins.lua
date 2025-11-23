@@ -20,19 +20,15 @@ bootstrap_pckr()
 local pckr = require("pckr")
 
 pckr.add{
-    "~/proj/oradark.nvim",
-
+    -- "~/proj/oradark.nvim",
     "nvim-mini/mini.pairs",
     "nvim-mini/mini.pick",
     "nvim-mini/mini.comment",
     "nvim-mini/mini-git",
-
     "williamboman/mason.nvim",
     "L3MON4D3/LuaSnip",
-
     { "saghen/blink.cmp", requires = { "rafamadriz/friendly-snippets" }},
     { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
-
     {
         "stevearc/oil.nvim",
         ---@module 'oil'
