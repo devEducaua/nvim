@@ -2,11 +2,12 @@ local map = vim.keymap.set
 vim.g.mapleader = " "
 
 map({"i", "v", "t"}, "jk", "<esc>")
+map("v", "<leader>e", ":lua<CR>")
+map("n", "<leader>c", ":Cmd<CR>")
 
 map("t", "<esc>", "<c-\\><c-n>")
 map("n", "<space>;", "q:", {})
 map("t", "<A-q>", "<esc><esc>bd<CR>")
-
 map("n", "<A-d>", ":cd %:p:h<CR>")
 
 map("n", "<leader>b", ":b#<CR>")
@@ -29,7 +30,7 @@ map("n", "<leader>gs", ":Git status<CR>", {})
 map("n", "<leader>ga", ":Git add", {})
 map("n", "<leader>gA", ":Git add %<CR>", {})
 map("n", "<leader>gc", ":Git commit", {})
-map("n", "<leader>gm", ":Git push -u origin", {})
+map("n", "<leader>gp", ":Git push -u origin", {})
 map("n", "<leader>gm", ":Git push -u origin main<CR>", {})
 
 map("n", "<leader>w", ":up<CR>", {})
@@ -51,9 +52,9 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = { "c", "sh", "man" },
+    pattern = { "sh", "man" },
     callback = function ()
-        map({"v", "x", "n"}, "K", function ()
+        map("n", "<C-k>", function ()
             vim.cmd("Man " .. vim.fn.expand("<cword>"))
         end, { buffer = true })
     end
