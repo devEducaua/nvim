@@ -5,6 +5,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
         if client:supports_method('textDocument/implementation') then
             vim.keymap.set("n", "gli", vim.lsp.buf.implementation, { buffer = args.buf })
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
         end
 
         vim.keymap.set({ "n", "v", "x" }, "<leader>lf", vim.lsp.buf.format, {})
@@ -18,12 +19,15 @@ vim.lsp.config["luals"] = {
     settings = {
         Lua = {
             diagnostics = {
-                globals = { 'vim', 'love' }
+                globals = { 'vim', 'love', 'core' }
             },
             workspace = {
                 library = {
+                    "/usr/share/luanti/builtin",
+                    "/usr/share/luanti",
                     vim.env.VIMRUNTIME
-                }
+                },
+                checkThirdParty = true
             }
         }
     }
