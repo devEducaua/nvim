@@ -1,6 +1,5 @@
 local function bootstrap_pckr()
     local pckr_path = vim.fn.stdpath("data") .. "/pckr/pckr.nvim"
-    --print(pckr_path)
   
     if not (vim.uv or vim.loop).fs_stat(pckr_path) then
         vim.fn.system({
@@ -20,7 +19,6 @@ bootstrap_pckr()
 local pckr = require("pckr")
 
 pckr.add{
-    -- "~/proj/oradark.nvim",
     "nvim-mini/mini.pairs",
     "nvim-mini/mini.pick",
     "nvim-mini/mini.comment",
