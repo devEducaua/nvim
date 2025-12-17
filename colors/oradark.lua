@@ -32,7 +32,7 @@ local groups = {
     QuickFixLine = { fg = colors.orange },
 
     -- Syntax
-    Comment = { fg = colors.dark, italic = true },
+    Comment = { fg = colors.grey, italic = true },
     String = { fg = colors.orange },
     Number = { fg = colors.light_g },
     Keyword = { fg = colors.grey, bold = true },
