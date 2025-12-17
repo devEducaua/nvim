@@ -10,7 +10,6 @@ this is my **/**comfy**/** nvim setup.
 - mason
 - blink
 - luasnip
-- oradark
 - treesitter
 - mini.pairs
 - mini.pick
