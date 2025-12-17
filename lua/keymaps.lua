@@ -25,7 +25,7 @@ map("n", "<C-f>", "<C-f>zz")
 map("n", "<C-b>", "<C-b>zz")
 
 map("n", "<leader>gd", ":Git diff<CR>", {})
-map("n", "<leader>gD", ":Git diff>", {})
+map("n", "<leader>gD", ":Git diff", {})
 map("n", "<leader>gs", ":Git status<CR>", {})
 map("n", "<leader>ga", ":Git add", {})
 map("n", "<leader>gA", ":Git add %<CR>", {})
