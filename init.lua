@@ -89,6 +89,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "help",
+    pattern = { "help", "man" },
     command = "wincmd L"
 })
