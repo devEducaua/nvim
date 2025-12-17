@@ -1,10 +1,17 @@
 require("snippets")
 require("mason").setup()
-
 require('mini.pairs').setup({})
 require("mini.comment").setup({})
 require("mini.git").setup({})
 require("mini.pick").setup({
+    mappings = {
+        move_down = "<Tab>",
+        move_up = "<S-Tab>",
+
+        toggle_info = "<C-n>",
+        toggle_preview = "<C-p>",
+    },
+
     options = {
         content_from_bottom = false
     },
@@ -51,6 +58,7 @@ require("nvim-treesitter.configs").setup({
     },
     indent = {
         enable = true,
+        disable = { "html" }
     },
 })
 
