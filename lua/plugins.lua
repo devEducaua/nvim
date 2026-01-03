@@ -19,7 +19,6 @@ bootstrap_pckr()
 local pckr = require("pckr")
 
 pckr.add{
-    "nvim-mini/mini.pairs",
     "nvim-mini/mini.pick",
     "nvim-mini/mini.comment",
     "nvim-mini/mini-git",

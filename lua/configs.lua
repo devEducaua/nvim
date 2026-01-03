@@ -1,6 +1,5 @@
 require("snippets")
 require("mason").setup()
-require('mini.pairs').setup({})
 require("mini.comment").setup({})
 require("mini.git").setup({})
 require("mini.pick").setup({
