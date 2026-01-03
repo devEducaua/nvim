@@ -51,7 +51,7 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("FileType", {
     pattern = { "sh", "man" },
     callback = function ()
         map("n", "<C-k>", function ()
