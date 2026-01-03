@@ -17,7 +17,7 @@ vim.o.softtabstop = 4
 vim.o.expandtab = true
 vim.o.swapfile = false
 vim.o.showmode = false
-vim.o.cmdheight = 1
+vim.o.cmdheight = 0
 vim.o.winborder = "rounded"
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
@@ -57,8 +57,8 @@ local statusline = {
     '%{&filetype}',
     ' •',
     '%3l:%-2c ',
-    '• ',
-    "%{v:lua.os.date('%d/%m %a %H:%M')} ",
+    -- '• ',
+    -- "%{v:lua.os.date('%d/%m %a %H:%M')} ",
 }
 
 vim.o.statusline = table.concat(statusline, '')
@@ -77,6 +77,12 @@ vim.api.nvim_create_autocmd('BufEnter', {
     callback = function ()
         vim.o.linebreak = true
     end
+})
+
+vim.filetype.add({
+    extension = {
+        njk = "jinja"
+    }
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
