@@ -1,4 +1,4 @@
-local servers = { "luals", "ts_ls", "clangd", "bashls", "astro-language-server", "gopls", "cssls", "html", "denols" }
+local servers = { "luals", "ts_ls", "clangd", "bashls", "astro-language-server", "gopls", "cssls", "html", "denols", "pyright" }
 
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
@@ -45,6 +45,12 @@ vim.lsp.config["ts_ls"] = {
     root_markers = { "node_modules/", "package.json", ".git" }
 }
 
+vim.lsp.config["tsgo"] = {
+    cmd = { "tsgo", "--lps", "--stdio" },
+    filetypes = { "typescript", "javascript"},
+    root_markers = { "node_modules", "package.json", "bun.lock" }
+}
+
 vim.lsp.config("denols", {
     cmd = { "deno", "lsp" },
     filetypes = { "javascript", "typescript" },
@@ -76,8 +82,13 @@ vim.lsp.config["cssls"] = {
 
 vim.lsp.config["html"] = {
     cmd = { "vscode-html-language-server", "--stdio" },
-    filetypes = { "html", "astro" },
+    filetypes = { "html", "astro", "jinja" },
     root_markers = { ".git" }
+}
+
+vim.lsp.config["pyright"] = {
+    cmd = { "pyright-langserver", "--stdio" },
+    filetypes = { "python" },
 }
 
 vim.lsp.enable(servers)
