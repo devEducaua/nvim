@@ -1,4 +1,4 @@
-local servers = { "luals", "ts_ls", "clangd", "bashls", "astro-language-server", "gopls", "cssls", "html", "denols", "pyright" }
+local servers = { "luals", "ts_ls", "clangd", "bashls", "astro-language-server", "gopls", "cssls", "html", "denols", "pyright", "texlab" }
 
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
@@ -89,6 +89,12 @@ vim.lsp.config["html"] = {
 vim.lsp.config["pyright"] = {
     cmd = { "pyright-langserver", "--stdio" },
     filetypes = { "python" },
+    root_markers = { "requirements.txt" }
+}
+
+vim.lsp.config["texlab"] = {
+    cmd = { "texlab" },
+    filetypes = { "tex", "plaintex" },
 }
 
 vim.lsp.enable(servers)
