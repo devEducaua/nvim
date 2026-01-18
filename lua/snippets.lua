@@ -5,7 +5,7 @@ local t = ls.text_node
 local i = ls.insert_node
 
 ls.add_snippets("typescript", {
-    s("export", {
+    s("exp", {
         t("export default class "), i(1, "name"), t(" {"),
         t({ "", "\t"}), i(2),
         t({ "", "}" }),
