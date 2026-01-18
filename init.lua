@@ -35,7 +35,7 @@ vim.opt.listchars = {
 vim.opt.fillchars = { eob = " ", vert = " ", horiz = " " }
 
 
-function git_branch()
+function Git_branch()
     local handle = io.popen('git rev-parse --abbrev-ref HEAD 2>/dev/null')
     if not handle then return '' end
     local result = handle:read("*a")
@@ -51,7 +51,7 @@ end
 local statusline = {
     '%t',
     '%r',
-    ' %{v:lua.git_branch()}',
+    ' %{v:lua.Git_branch()}',
     '%m',
     '%=',
     '%{&filetype}',
