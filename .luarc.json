@@ -1,0 +1,8 @@
+{
+    "workspace.library": [
+        "/usr/share/luanti/builtin",
+        "/usr/share/luanti",
+        "/home/edu/dow/bloat/nvim-linux-x86_64/share/nvim/runtime",
+        "${3rd}/luv/library"
+    ]
+}

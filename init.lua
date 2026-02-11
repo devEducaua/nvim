@@ -34,7 +34,6 @@ vim.opt.listchars = {
 }
 vim.opt.fillchars = { eob = " ", vert = " ", horiz = " " }
 
-
 function Git_branch()
     local handle = io.popen('git rev-parse --abbrev-ref HEAD 2>/dev/null')
     if not handle then return '' end
