@@ -61,8 +61,8 @@ local groups = {
     DiagnosticUnderlineWarn = { sp = colors.yellow, undercurl = true },
 
     -- Msg
-    ModeMsg = { fg = colors.orange },
-    MoreMsg = { fg = colors.orange },
+    ModeMsg = { fg = colors.light_g },
+    MoreMsg = { fg = colors.light_g },
     WarningMsg = { fg = colors.yellow },
     ErrorMsg = { fg = colors.red },
     Question = { fg = colors.orange },
