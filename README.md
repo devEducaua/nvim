@@ -1,11 +1,11 @@
 # nvim setup
+**requires nvim 0.12**
 this is my **/**comfy**/** nvim setup.
 
 ![oil img](assets/oil.png)
 ![code img](assets/code.png)
 
 # plugins
-- pckr
 - oil
 - mason
 - blink
