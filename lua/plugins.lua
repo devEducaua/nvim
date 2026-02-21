@@ -1,49 +1,16 @@
 
 vim.pack.add({
-    "https://github.com/nvim-mini/mini.pick",
-    "https://github.com/nvim-mini/mini.comment",
-    "https://github.com/nvim-mini/mini-git",
     "https://github.com/williamboman/mason.nvim",
     "https://github.com/L3MON4D3/LuaSnip",
     "https://github.com/saghen/blink.cmp",
     "https://github.com/rafamadriz/friendly-snippets",
     "https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/stevearc/oil.nvim",
-    "https://github.com/nvim-tree/nvim-web-devicons"
+    -- "https://github.com/nvim-tree/nvim-web-devicons",
 })
 
 require("snippets")
 require("mason").setup()
-require("mini.comment").setup({})
-require("mini.git").setup({})
-require("mini.pick").setup({
-    mappings = {
-        move_down = "<Tab>",
-        move_up = "<S-Tab>",
-
-        toggle_info = "<C-n>",
-        toggle_preview = "<C-p>",
-    },
-
-    options = {
-        content_from_bottom = false
-    },
-
-    window = {
-        config = function()
-            return {
-                col = 0,
-                row = vim.o.lines,
-                height = math.floor(vim.o.lines * 0.1),
-                width = vim.o.columns,
-                style = 'minimal',
-                border = "none",
-            }
-        end,
-
-        prompt_prefix = ' '
-    },
-})
 
 require("blink.cmp").setup({
     snippets = { preset = "luasnip" },
@@ -58,7 +25,10 @@ require("blink.cmp").setup({
     },
 
     completion = { documentation = { auto_show = true }},
-    fuzzy = { implementation = "lua" }
+    fuzzy = { implementation = "lua" },
+    cmdline = { 
+        enabled = false
+    }
 })
 
 require("nvim-treesitter.configs").setup({
@@ -92,29 +62,5 @@ require("oil").setup({
     }, keymaps = {
         ["g."] = { "actions.toggle_hidden", mode = "n" },
         ["g,"] = { "actions.cd", mode = "n" },
-
-        ["<space>l"] = {
-            desc = "download template license",
-            callback = function ()
-                vim.fn.feedkeys(":License ")
-            end
-        },
-
-        ["<space>h"] = {
-            desc = "pass file to command",
-            callback = function ()
-               local name = commands.get_path(require("oil").get_cursor_entry().name)
-               local keys = "q:" .. "iCmd " .. name .. "<esc>Bi"
-               keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
-               vim.api.nvim_feedkeys(keys, 'n', false)
-            end
-        },
-
-        ["<space>r"] = {
-            callback = function ()
-                local name = require("oil").get_cursor_entry().name
-                commands.exec_by_name(name)
-            end
-        },
     },
 })

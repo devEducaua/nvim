@@ -12,7 +12,3 @@ this is my **/**comfy**/** nvim setup.
 - blink
 - luasnip
 - treesitter
-- mini.pairs
-- mini.pick
-- mini.git
-- mini.comment

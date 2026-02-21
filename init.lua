@@ -17,12 +17,29 @@ vim.o.softtabstop = 4
 vim.o.expandtab = true
 vim.o.swapfile = false
 vim.o.showmode = false
-vim.o.cmdheight = 0
+vim.o.cmdheight = 1
 vim.o.winborder = "rounded"
+vim.o.pumborder = "rounded"
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
-
+vim.o.path = vim.o.path .. "**"
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.fileignorecase = true
+vim.o.wildignorecase = true
+vim.o.wildmenu = true
+vim.o.wildignorecase = true
+vim.o.wildoptions = "fuzzy"
+vim.o.wildmode = "longest:full,full"
+vim.o.wildignore = vim.o.wildignore .. "*/node_modules/*"
 vim.opt.iskeyword:remove("_")
+
+function _G.my_find(text, _)
+    local files = vim.fn.glob("**/*", true, true)
+    return vim.fn.matchfuzzy(files, text)
+end
+
+vim.opt.findfunc = "v:lua.my_find"
 
 vim.opt.list = true
 vim.opt.listchars = {
