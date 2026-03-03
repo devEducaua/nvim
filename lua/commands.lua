@@ -49,7 +49,6 @@ M.quotes = function (d)
 
     local cmd = "%s/'/\"/g"
 
-    -- vim.inspect(print(args))
     if (args == "c") then
         cmd = cmd .. "c"
     end
@@ -57,14 +56,7 @@ M.quotes = function (d)
     vim.cmd(cmd)
 end
 
-M.notes = function ()
-    local dir = "~/not"
-    vim.cmd("e " .. dir)
-    --vim.cmd("cd " .. dir)
-end
-
 vim.api.nvim_create_user_command("Cmd", M.run_command, { nargs = "*" })
-vim.api.nvim_create_user_command("T", M.run_command, { nargs = "*" })
 vim.api.nvim_create_user_command("License", M.get_license, {})
 vim.api.nvim_create_user_command("White", M.white, {})
 vim.api.nvim_create_user_command("Quotes", M.quotes, { nargs = "*" })
