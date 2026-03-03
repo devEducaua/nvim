@@ -2,37 +2,18 @@
 vim.pack.add({
     "https://github.com/williamboman/mason.nvim",
     "https://github.com/L3MON4D3/LuaSnip",
-    "https://github.com/saghen/blink.cmp",
     "https://github.com/rafamadriz/friendly-snippets",
     "https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/stevearc/oil.nvim",
-    -- "https://github.com/nvim-tree/nvim-web-devicons",
+    "https://github.com/nvim-mini/mini.completion",
 })
 
 require("snippets")
 require("mason").setup()
-
-require("blink.cmp").setup({
-    snippets = { preset = "luasnip" },
-    sources = {
-        default = { "lsp", "path", "snippets", "buffer" }
-    },
-
-    keymap = {
-        ['<CR>'] = { 'select_and_accept', 'fallback' },
-        ['<S-Tab>'] = { 'select_prev', 'fallback' },
-        ['<Tab>'] = { 'select_next', 'fallback' },
-    },
-
-    completion = { documentation = { auto_show = true }},
-    fuzzy = { implementation = "lua" },
-    cmdline = { 
-        enabled = false
-    }
-})
+require("mini.completion").setup()
 
 require("nvim-treesitter.configs").setup({
-    ensure_installed = { "c", "lua", "bash", "typescript", "html", "css", "javascript", "astro", "markdown", "go", "python" },
+    ensure_installed = { "c", "lua", "bash", "typescript", "html", "css", "javascript", "markdown", "go", "python" },
     sync_install = false,
     auto_install = false,
     highlight = {
@@ -45,7 +26,6 @@ require("nvim-treesitter.configs").setup({
     },
 })
 
-local commands = require("commands")
 require("oil").setup({
     default_file_explorer = true,
     skip_confirm_for_simple_edits = true,
