@@ -17,7 +17,7 @@ vim.o.winborder = "rounded"
 vim.o.pumborder = "rounded"
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
-vim.o.path = vim.o.path .. "**"
+vim.o.path = "**"
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.fileignorecase = true
@@ -28,6 +28,9 @@ vim.o.wildoptions = "fuzzy"
 vim.o.wildmode = "longest:full,full"
 vim.o.wildignore = vim.o.wildignore .. "*/node_modules/*"
 vim.opt.iskeyword:remove("_")
+
+vim.o.makeprg = "make --quiet"
+vim.o.grepprg = "rg --vimgrep --smart-case --no-ignore --follow"
 
 function _G.my_find(text, _)
     local files = vim.fn.glob("**/*", true, true)
@@ -54,7 +57,7 @@ function Git_branch()
 
     result = result:gsub("\n", "")
     if result ~= '' and result ~= ' ' then
-        return 'at •' .. result .. '•'
+        return "• git::" .. result
     end
     return ''
 end
@@ -94,15 +97,20 @@ vim.filetype.add({
 local map = vim.keymap.set
 
 map({"i", "v", "t"}, "jk", "<esc>")
-map("n", "<leader>c", ":Cmd<CR>")
 
 map("t", "<esc>", "<c-\\><c-n>")
 map("n", "<space>;", "q:", {})
 map("t", "<A-q>", "<esc><esc>bd<CR>")
 
-map("n", "<leader>b", ":b#<CR>")
-map("n", "<leader>B", ":bn<CR>")
 map("n", "<leader>ls", ":ls<CR>")
+map("n", "<leader>b", ":b#<CR>")
+map("n", "<leader>B", ":b ")
+map("n", "<leader>f", ":find ")
+map("n", "<leader>h", ":help ")
+
+map("n", "<leader>c", ":copen<CR>")
+map("n", "<leader>m", ":make<CR>")
+map("n", "<leader>g", ":grep ")
 
 map({"n", "v", "x", "c", "t"}, "<C-y>", '"+y', {})
 map({"n", "v", "x", "c", "t"}, "<C-p>", '"+p', {})
@@ -119,9 +127,6 @@ map("n", "<leader>!", ":q!<CR>", {})
 map("n", "<leader>q", ":bd!<CR>", {})
 map("n", "<leader>s", ":w<CR>:so<CR>", {})
 
-map("n", "<leader>f", ":find ")
-map("n", "<leader>h", ":help ")
-map("n", "<leader>g", ":b ")
 map("n", "-", "<cmd>Oil<CR>", {})
 
 vim.api.nvim_create_autocmd("CmdwinEnter", {
@@ -144,8 +149,8 @@ vim.api.nvim_create_autocmd("FileType", {
     command = "wincmd L"
 })
 
-local servers = { "luals", "ts_ls", "clangd", "bashls", "gopls", "cssls", "html","pyright", "texlab" } --denols
-
+local servers = { "luals", "ts_ls", "clangd", "bashls", "cssls", "html","pyright", "texlab" } --denols
+--"gopls", 
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
