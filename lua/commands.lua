@@ -23,23 +23,6 @@ M.get_license = function ()
     end)
 end
 
-M.run_command = function(args)
-    local arg = 'term'
-
-    vim.cmd.new()
-    vim.cmd.wincmd("J")
-
-    if (args['args']) then
-        arg = arg .. ' ' .. args['args']
-    end
-
-    if (#arg == 5) then
-        vim.cmd("startinsert")
-    end
-
-    vim.cmd(arg)
-end
-
 M.white = function ()
     vim.cmd("%s/\t/    /g")
 end
@@ -56,7 +39,6 @@ M.quotes = function (d)
     vim.cmd(cmd)
 end
 
-vim.api.nvim_create_user_command("Cmd", M.run_command, { nargs = "*" })
 vim.api.nvim_create_user_command("License", M.get_license, {})
 vim.api.nvim_create_user_command("White", M.white, {})
 vim.api.nvim_create_user_command("Quotes", M.quotes, { nargs = "*" })
