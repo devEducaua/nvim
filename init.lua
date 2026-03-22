@@ -156,7 +156,6 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.completion",
 })
 
-require("snippets")
 require("mason").setup()
 require("mini.completion").setup()
 
