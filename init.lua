@@ -1,4 +1,3 @@
-require("commands")
 
 vim.cmd.colorscheme("oradark");
 vim.o.termguicolors = true
@@ -291,3 +290,97 @@ vim.lsp.enable(servers)
 for _, s in ipairs(servers) do
     vim.lsp.config[s].capabilities = capabilities
 end
+
+local cmds = {}
+
+cmds.pluginSelectToRemove = function ()
+    local list = vim.pack.get()
+    local names = {}
+
+    for _, p in ipairs(list) do
+        table.insert(names, p.spec.name)
+    end
+
+    vim.ui.select(names, { prompt = "delete: "}, function (name)
+        vim.pack.del({name})
+    end)
+end
+
+cmds.pluginUpdate = function ()
+    vim.pack.update()
+end
+
+cmds.get_license = function ()
+    vim.ui.input({ prompt = "license: "}, function (license)
+        vim.cmd("!cp ~/doc/licenses/" .. license .. ".txt LICENSE")
+    end)
+end
+
+cmds.white = function ()
+    vim.cmd("%s/\t/    /g")
+end
+
+cmds.quotes = function (d)
+    local args = d.args
+
+    local cmd = "%s/'/\"/g"
+
+    if (args == "c") then
+        cmd = cmd .. "c"
+    end
+
+    vim.cmd(cmd)
+end
+
+vim.api.nvim_create_user_command("License", cmds.get_license, {})
+vim.api.nvim_create_user_command("White", cmds.white, {})
+vim.api.nvim_create_user_command("Quotes", cmds.quotes, { nargs = "*" })
+vim.api.nvim_create_user_command("Packrm", cmds.pluginSelectToRemove, { nargs = "*" })
+vim.api.nvim_create_user_command("Packup", cmds.pluginUpdate, {})
+
+local ls = require("luasnip")
+
+local s = ls.snippet
+local t = ls.text_node
+local i = ls.insert_node
+
+ls.add_snippets("html", {
+    s("html", {
+        t("<DOCTYPE html>"),
+        t({"", "<html>"}),
+        t({"", "<head>"}),
+        t({"", "\t<meta charset='UTF-8'"}),
+        t({"", "\t<meta name='viewport' content='width=device-width, initial-scale=1.0'>"}),
+        t({"", "\t<title>Title</title>"}),
+        t({"", "\t<link href='style.css' rel='stylesheet'>"}),
+        t({"", "</head>"}),
+        t({"", "<body>"}),
+        t({"", "\t"}), i(1),
+        t({"", '\t<script src="script.js"></script>'}),
+        t({"", "</body>"}),
+        t({"", "</html>"}),
+    })
+})
+
+ls.add_snippets("jsonc", {
+    s("tsconfig", {
+        t("{"),
+        t({" ", '\t"compilerOptions": {'}),
+        t{" ", '\t\t"target": "ES2020",'},
+        t{" ", '\t\t"module": "esnext",'},
+        t{" ", '\t\t"moduleResolution": "node",'},
+        t{" ", '\t\t"outDir": "dist",'},
+        t{" ", '\t\t"rootDir": "src",'},
+        t{" ", '\t\t"strict": true,'},
+        t{" ", '\t\t"esModuleInterop": true,'},
+        t{" ", '\t\t"skipLibCheck": true'},
+        t{" ", "\t},"},
+        t{"", '\t"exclude": ['},
+        t{"", '\t\t"node_modules",'},
+        t{"", '\t\t"test"'},
+        t{"", '\t],'},
+        t{"", '\t"include": ["src"]'},
+        t({" ", "}"})
+    })
+})
+
