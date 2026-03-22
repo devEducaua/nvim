@@ -26,7 +26,8 @@ vim.o.wildoptions = "fuzzy"
 vim.o.wildmode = "longest:full,full"
 vim.o.wildignore = vim.o.wildignore .. "*/node_modules/*"
 vim.opt.iskeyword:remove("_")
-
+vim.o.omnifunc = "v:lua.vim.lsp.omnifunc"
+vim.o.completeopt = "menuone,noselect"
 vim.o.makeprg = "make --quiet"
 vim.o.grepprg = "rg --vimgrep --smart-case --no-ignore --follow"
 
@@ -148,16 +149,9 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.pack.add({
-    "https://github.com/williamboman/mason.nvim",
-    "https://github.com/L3MON4D3/LuaSnip",
-    "https://github.com/rafamadriz/friendly-snippets",
     "https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/stevearc/oil.nvim",
-    "https://github.com/nvim-mini/mini.completion",
 })
-
-require("mason").setup()
-require("mini.completion").setup()
 
 require("nvim-treesitter.configs").setup({
     ensure_installed = { "c", "lua", "bash", "typescript", "html", "css", "javascript", "markdown", "go", "python" },
@@ -186,14 +180,14 @@ require("oil").setup({
         "permissions",
         "size",
         "mtime",
-    }, keymaps = {
+    },
+    keymaps = {
         ["g."] = { "actions.toggle_hidden", mode = "n" },
         ["g,"] = { "actions.cd", mode = "n" },
     },
 })
 
-local servers = { "luals", "ts_ls", "clangd", "bashls", "cssls", "html","pyright", "texlab" } --denols
---"gopls", 
+local servers = { "luals", "ts_ls", "clangd", "cssls", "texlab", "gopls" }
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
@@ -239,45 +233,22 @@ vim.lsp.config["tsgo"] = {
     root_markers = { "node_modules", "package.json", "bun.lock" }
 }
 
-vim.lsp.config("denols", {
-    cmd = { "deno", "lsp" },
-    filetypes = { "javascript", "typescript" },
-    root_markers = { "deno.json", "deno.jsonc", "deno.lock" },
-})
-
 vim.lsp.config["clangd"] = {
     cmd = { "clangd" },
     filetypes = { "c", "cpp" },
-    root_markers = { "Makefile", ".git" }
-}
-
-vim.lsp.config["bashls"] = {
-    cmd = { "bash-language-server" },
-    filetypes = { "sh" }
+    root_markers = { "Makefile", "include", ".git" }
 }
 
 vim.lsp.config["gopls"] = {
     cmd = { "gopls" },
     filetypes = { "go", "gomod" },
-    root_markers = { "go.mod" }
+    root_markers = { "go.mod", "go.sum" }
 }
 
 vim.lsp.config["cssls"] = {
     cmd = { "vscode-css-language-server", "--stdio" },
     filetypes = { "css", "scss", "less" },
     root_markers = { "package.json", ".git" }
-}
-
-vim.lsp.config["html"] = {
-    cmd = { "vscode-html-language-server", "--stdio" },
-    filetypes = { "html", "astro", "jinja" },
-    root_markers = { ".git" }
-}
-
-vim.lsp.config["pyright"] = {
-    cmd = { "pyright-langserver", "--stdio" },
-    filetypes = { "python" },
-    root_markers = { "requirements.txt" }
 }
 
 vim.lsp.config["texlab"] = {
@@ -303,10 +274,6 @@ cmds.pluginSelectToRemove = function ()
     vim.ui.select(names, { prompt = "delete: "}, function (name)
         vim.pack.del({name})
     end)
-end
-
-cmds.pluginUpdate = function ()
-    vim.pack.update()
 end
 
 cmds.get_license = function ()
@@ -335,51 +302,4 @@ vim.api.nvim_create_user_command("License", cmds.get_license, {})
 vim.api.nvim_create_user_command("White", cmds.white, {})
 vim.api.nvim_create_user_command("Quotes", cmds.quotes, { nargs = "*" })
 vim.api.nvim_create_user_command("Packrm", cmds.pluginSelectToRemove, { nargs = "*" })
-vim.api.nvim_create_user_command("Packup", cmds.pluginUpdate, {})
-
-local ls = require("luasnip")
-
-local s = ls.snippet
-local t = ls.text_node
-local i = ls.insert_node
-
-ls.add_snippets("html", {
-    s("html", {
-        t("<DOCTYPE html>"),
-        t({"", "<html>"}),
-        t({"", "<head>"}),
-        t({"", "\t<meta charset='UTF-8'"}),
-        t({"", "\t<meta name='viewport' content='width=device-width, initial-scale=1.0'>"}),
-        t({"", "\t<title>Title</title>"}),
-        t({"", "\t<link href='style.css' rel='stylesheet'>"}),
-        t({"", "</head>"}),
-        t({"", "<body>"}),
-        t({"", "\t"}), i(1),
-        t({"", '\t<script src="script.js"></script>'}),
-        t({"", "</body>"}),
-        t({"", "</html>"}),
-    })
-})
-
-ls.add_snippets("jsonc", {
-    s("tsconfig", {
-        t("{"),
-        t({" ", '\t"compilerOptions": {'}),
-        t{" ", '\t\t"target": "ES2020",'},
-        t{" ", '\t\t"module": "esnext",'},
-        t{" ", '\t\t"moduleResolution": "node",'},
-        t{" ", '\t\t"outDir": "dist",'},
-        t{" ", '\t\t"rootDir": "src",'},
-        t{" ", '\t\t"strict": true,'},
-        t{" ", '\t\t"esModuleInterop": true,'},
-        t{" ", '\t\t"skipLibCheck": true'},
-        t{" ", "\t},"},
-        t{"", '\t"exclude": ['},
-        t{"", '\t\t"node_modules",'},
-        t{"", '\t\t"test"'},
-        t{"", '\t],'},
-        t{"", '\t"include": ["src"]'},
-        t({" ", "}"})
-    })
-})
 

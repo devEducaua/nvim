@@ -8,8 +8,5 @@ this is my **/**comfy**/** nvim setup.
 
 # plugins
 
-- oil
-- mason
-- mini.completion
-- luasnip
-- treesitter
+- oil.nvim
+- nvim-treesitter
