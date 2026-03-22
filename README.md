@@ -7,8 +7,9 @@ this is my **/**comfy**/** nvim setup.
 ![code img](assets/code.png)
 
 # plugins
+
 - oil
 - mason
-- blink
+- mini.completion
 - luasnip
 - treesitter
