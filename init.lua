@@ -56,7 +56,7 @@ function Git_branch()
 
     result = result:gsub("\n", "")
     if result ~= '' and result ~= ' ' then
-        return "• git::" .. result
+        return "• [" .. result .. "]"
     end
     return ''
 end
@@ -64,10 +64,14 @@ end
 local statusline = {
     '%t',
     '%r',
+    '%h',
+    '%q',
     ' %{v:lua.Git_branch()}',
     '%m',
     '%=',
     '%{&filetype}',
+    ' •',
+    ' %L',
     ' •',
     '%3l:%-2c ',
 }
@@ -81,7 +85,7 @@ vim.diagnostic.config({
 })
 
 vim.api.nvim_create_autocmd('BufEnter', {
-    pattern = { "*.md", "*.tex" },
+    pattern = { "*.md", "*.tex", "*.nabo", "*.adoc" },
     callback = function ()
         vim.o.linebreak = true
     end
@@ -89,7 +93,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 vim.filetype.add({
     extension = {
-        njk = "jinja"
+        njk = "html" --jinja
     }
 })
 
@@ -137,7 +141,6 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
 	pattern = "*",
-	desc = "highlight selection on yank",
 	callback = function()
 		vim.highlight.on_yank({ timeout = 200, visual = true })
 	end,
@@ -263,7 +266,7 @@ end
 
 local cmds = {}
 
-cmds.pluginSelectToRemove = function ()
+cmds.plugin_select_remove = function ()
     local list = vim.pack.get()
     local names = {}
 
@@ -301,5 +304,5 @@ end
 vim.api.nvim_create_user_command("License", cmds.get_license, {})
 vim.api.nvim_create_user_command("White", cmds.white, {})
 vim.api.nvim_create_user_command("Quotes", cmds.quotes, { nargs = "*" })
-vim.api.nvim_create_user_command("Packrm", cmds.pluginSelectToRemove, { nargs = "*" })
+vim.api.nvim_create_user_command("Packrm", cmds.plugin_select_remove, { nargs = "*" })
 
