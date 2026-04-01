@@ -107,7 +107,7 @@ map("t", "<A-q>", "<esc><esc>bd<CR>")
 
 map("n", "<leader>ls", ":ls<CR>")
 map("n", "<leader>b", ":b#<CR>")
-map("n", "<leader>B", ":b ")
+map("n", "<leader>B", ":%bdelete<CR>")
 map("n", "<leader>f", ":find ")
 map("n", "<leader>h", ":help ")
 
