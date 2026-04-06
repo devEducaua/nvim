@@ -1,11 +1,12 @@
+
 local colors = {
     bg = "#000000",
     fg = "#ffffff",
     non_text = "#1e1e1e",
     light = "#e5e5e5",
     light_g = "#777777",
-    dark_g  = "#7a7a7a",
     grey = "#444444",
+    dark_g  = "#7a7a7a",
     dark = "#333333",
     orange = "#d17e25",
     red = "#d14d4d",
@@ -46,9 +47,16 @@ local groups = {
     Identifier = { fg = colors.grey },
     Type = { fg = colors.orange },
     Constant = { fg = colors.light },
-    Statement = { fg = colors.light },
+    Statement = { fg = colors.grey, bold = true },
     MatchParen = { bg = colors.grey },
     Title = { fg = colors.orange },
+    Boolean = { fg = colors.fg },
+    Operator = { fg = colors.light_g },
+    Conditional = { fg = colors.grey, bold = true },
+    Repeat = { fg = colors.grey, bold = true },
+    Label = { fg = colors.grey, bold = true },
+    SpecialChar = { fg = colors.orange },
+    Todo = { fg = colors.grey, bold = true, bg = "NONE" },
 
     -- Lsp
     DiagnosticError = { sp = colors.red },
