@@ -151,24 +151,20 @@ vim.api.nvim_create_autocmd("FileType", {
     command = "wincmd L"
 })
 
+
+
 vim.pack.add({
-    "https://github.com/nvim-treesitter/nvim-treesitter",
+    --"https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/stevearc/oil.nvim",
 })
 
-require("nvim-treesitter.configs").setup({
-    ensure_installed = { "c", "lua", "bash", "typescript", "html", "css", "javascript", "markdown", "go", "python" },
-    sync_install = false,
-    auto_install = false,
-    highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-    },
-    indent = {
-        enable = true,
-        disable = { "html" }
-    },
-})
+--require("nvim-treesitter").setup()
+--require("nvim-treesitter").install({ "c", "lua", "typescript", "html", "css", "go" })
+--vim.api.nvim_create_autocmd("FileType", {
+--    pattern = { "<filetype>" },
+--    callback = function() vim.treesitter.start() end,
+--})
+--vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
 require("oil").setup({
     default_file_explorer = true,
@@ -243,7 +239,7 @@ vim.lsp.config["clangd"] = {
 }
 
 vim.lsp.config["gopls"] = {
-    cmd = { "gopls" },
+    cmd = { vim.fs.normalize("~/.config/go/bin/gopls") },
     filetypes = { "go", "gomod" },
     root_markers = { "go.mod", "go.sum" }
 }
