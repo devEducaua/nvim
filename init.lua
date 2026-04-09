@@ -24,7 +24,7 @@ vim.o.wildmenu = true
 vim.o.wildignorecase = true
 vim.o.wildoptions = "fuzzy"
 vim.o.wildmode = "longest:full,full"
-vim.o.wildignore = vim.o.wildignore .. "*/node_modules/*"
+vim.o.wildignore = "*/node_modules/*" -- add some form of changing this
 vim.opt.iskeyword:remove("_")
 vim.o.omnifunc = "v:lua.vim.lsp.omnifunc"
 vim.o.completeopt = "menuone,noselect"
@@ -93,7 +93,8 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 vim.filetype.add({
     extension = {
-        njk = "html" --jinja
+        njk = "html"
+        --njk = "jinja"
     }
 })
 
@@ -151,20 +152,28 @@ vim.api.nvim_create_autocmd("FileType", {
     command = "wincmd L"
 })
 
-
-
 vim.pack.add({
     --"https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/stevearc/oil.nvim",
 })
 
---require("nvim-treesitter").setup()
---require("nvim-treesitter").install({ "c", "lua", "typescript", "html", "css", "go" })
+--local ts = require("nvim-treesitter")
+--ts.install({ "c", "lua", "typescript", "html", "css", "go" })
+--vim.api.nvim_create_autocmd("PackChanged", {
+--    callback = function()
+--        ts.update()
+--    end
+--});
 --vim.api.nvim_create_autocmd("FileType", {
---    pattern = { "<filetype>" },
---    callback = function() vim.treesitter.start() end,
+--    callback = function(args) 
+--        local filetype = args.match
+--        local lang = vim.treesitter.language.get_lang(filetype)
+--        if vim.treesitter.language.add(lang) then
+--            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+--            vim.treesitter.start() 
+--        end
+--    end,
 --})
---vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
 require("oil").setup({
     default_file_explorer = true,
@@ -182,8 +191,8 @@ require("oil").setup({
     },
     keymaps = {
         ["g."] = { "actions.toggle_hidden", mode = "n" },
-        ["g,"] = { "actions.cd", mode = "n" },
-    },
+        ["g,"] = { "actions.cd", mode = "n" }
+    }
 })
 
 local servers = { "luals", "ts_ls", "clangd", "cssls", "texlab", "gopls" }
@@ -275,10 +284,8 @@ cmds.plugin_select_remove = function ()
     end)
 end
 
-cmds.get_license = function ()
-    vim.ui.input({ prompt = "license: "}, function (license)
-        vim.cmd("!cp ~/doc/licenses/" .. license .. ".txt LICENSE")
-    end)
+cmds.get_license = function (d)
+    vim.cmd("vsplit | terminal licenses.sh")
 end
 
 cmds.white = function ()
@@ -297,7 +304,7 @@ cmds.quotes = function (d)
     vim.cmd(cmd)
 end
 
-vim.api.nvim_create_user_command("License", cmds.get_license, {})
+vim.api.nvim_create_user_command("License", cmds.get_license, { nargs = "*" })
 vim.api.nvim_create_user_command("White", cmds.white, {})
 vim.api.nvim_create_user_command("Quotes", cmds.quotes, { nargs = "*" })
 vim.api.nvim_create_user_command("Packrm", cmds.plugin_select_remove, { nargs = "*" })
