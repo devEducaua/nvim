@@ -153,27 +153,8 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.pack.add({
-    --"https://github.com/nvim-treesitter/nvim-treesitter",
-    "https://github.com/stevearc/oil.nvim",
+    { src = "https://github.com/stevearc/oil.nvim" } -- possibly migrate to netrw
 })
-
---local ts = require("nvim-treesitter")
---ts.install({ "c", "lua", "typescript", "html", "css", "go" })
---vim.api.nvim_create_autocmd("PackChanged", {
---    callback = function()
---        ts.update()
---    end
---});
---vim.api.nvim_create_autocmd("FileType", {
---    callback = function(args) 
---        local filetype = args.match
---        local lang = vim.treesitter.language.get_lang(filetype)
---        if vim.treesitter.language.add(lang) then
---            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
---            vim.treesitter.start() 
---        end
---    end,
---})
 
 require("oil").setup({
     default_file_explorer = true,
@@ -195,7 +176,7 @@ require("oil").setup({
     }
 })
 
-local servers = { "luals", "ts_ls", "clangd", "cssls", "texlab", "gopls" }
+local servers = { "luals", "ts_ls", "clangd", "cssls", "gopls" }
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
@@ -257,11 +238,6 @@ vim.lsp.config["cssls"] = {
     cmd = { "vscode-css-language-server", "--stdio" },
     filetypes = { "css", "scss", "less" },
     root_markers = { "package.json", ".git" }
-}
-
-vim.lsp.config["texlab"] = {
-    cmd = { "texlab" },
-    filetypes = { "tex", "plaintex" },
 }
 
 vim.lsp.enable(servers)
