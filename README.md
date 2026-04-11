@@ -8,5 +8,4 @@ this is my **/**comfy**/** nvim setup.
 
 # plugins
 
-- oil.nvim
-- nvim-treesitter
+- [oil.nvim](https://github.com/stevearc/oil.nvim)
