@@ -44,6 +44,10 @@
 (set vim.o.statusline
   "%t%r%h%q %{v:lua.branch()}%m%=%{&filetype} • %L •%3l:%-2c")
 
+(vim.diagnostic.config {
+    :virtual_text {:current_line true}
+    :virtual_lines false})
+
 ;; this function is auto-generated
 (fn _G.branch []
   (let [handle (io.popen "git rev-parse --abbrev-ref HEAD 2>/dev/null")]
