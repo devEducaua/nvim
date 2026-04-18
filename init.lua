@@ -1,7 +1,5 @@
 
 vim.cmd.colorscheme("3min");
-vim.o.termguicolors = true
-vim.o.syntax = "on"
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.tabstop = 4
@@ -31,16 +29,16 @@ vim.o.completeopt = "menuone,noselect"
 vim.o.makeprg = "make" --quiet
 vim.o.grepprg = "rg --vimgrep --smart-case --no-ignore --follow"
 
-function _G.my_find(text, _)
+function _G.find(text, _)
     local files = vim.fn.glob("**/*", true, true)
     return vim.fn.matchfuzzy(files, text)
 end
 
-vim.opt.findfunc = "v:lua.my_find"
+vim.opt.findfunc = "v:lua.find"
 
-vim.opt.fillchars = { eob = " ", vert = " ", horiz = " " }
+vim.opt.fillchars = { vert = " ", horiz = " " }
 
-function Git_branch()
+function branch()
     local handle = io.popen('git rev-parse --abbrev-ref HEAD 2>/dev/null')
     if not handle then return '' end
     local result = handle:read("*a")
@@ -53,22 +51,7 @@ function Git_branch()
     return ''
 end
 
-local statusline = {
-    '%t',
-    '%r',
-    '%h',
-    '%q',
-    ' %{v:lua.Git_branch()}',
-    '%m',
-    '%=',
-    '%{&filetype}',
-    ' •',
-    ' %L',
-    ' •',
-    '%3l:%-2c ',
-}
-
-vim.o.statusline = table.concat(statusline, '')
+vim.o.statusline = "%t%r%h%q %{v:lua.branch()}%m%=%{&filetype} • %L •%3l:%-2c "
 
 vim.diagnostic.config({
     virtual_lines = {
@@ -96,7 +79,6 @@ map({"i", "v", "t"}, "jk", "<esc>")
 
 map("t", "<esc>", "<c-\\><c-n>")
 map("n", "<space>;", "q:", {})
-map("t", "<A-q>", "<esc><esc>bd<CR>")
 
 map("n", "<leader>ls", ":ls<CR>")
 map("n", "<leader>b", ":b#<CR>")
@@ -120,17 +102,9 @@ map("n", "<C-b>", "<C-b>zz")
 
 map("n", "<leader>w", ":up<CR>", {})
 map("n", "<leader>x", ":up<CR> :Oil<CR>", {})
-map("n", "<leader>!", ":q!<CR>", {})
 map("n", "<leader>q", ":bd!<CR>", {})
-map("n", "<leader>s", ":w<CR>:so<CR>", {})
 
 map("n", "-", ":Oil<CR>", {})
-
-vim.api.nvim_create_autocmd("CmdwinEnter", {
-  callback = function()
-    map("n", "<Esc>", "<C-c>", { buffer = true, noremap = true })
-  end,
-})
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
@@ -240,19 +214,6 @@ end
 
 local cmds = {}
 
-cmds.plugin_select_remove = function ()
-    local list = vim.pack.get()
-    local names = {}
-
-    for _, p in ipairs(list) do
-        table.insert(names, p.spec.name)
-    end
-
-    vim.ui.select(names, { prompt = "delete: "}, function (name)
-        vim.pack.del({name})
-    end)
-end
-
 cmds.get_license = function (d)
     vim.cmd("vsplit | terminal licenses.sh")
 end
@@ -276,5 +237,4 @@ end
 vim.api.nvim_create_user_command("License", cmds.get_license, { nargs = "*" })
 vim.api.nvim_create_user_command("White", cmds.white, {})
 vim.api.nvim_create_user_command("Quotes", cmds.quotes, { nargs = "*" })
-vim.api.nvim_create_user_command("Packrm", cmds.plugin_select_remove, { nargs = "*" })
 

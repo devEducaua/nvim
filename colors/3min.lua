@@ -1,4 +1,7 @@
 
+vim.o.termguicolors = true
+vim.o.syntax = "on"
+
 local colors = {
     bg =  "#000000",
     fg =  "#aaaaaa",
