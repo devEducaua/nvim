@@ -1,5 +1,5 @@
 
-vim.cmd.colorscheme("oradark");
+vim.cmd.colorscheme("3min");
 vim.o.termguicolors = true
 vim.o.syntax = "on"
 vim.o.number = true
@@ -28,7 +28,7 @@ vim.o.wildignore = "*/node_modules/*" -- add some form of changing this
 vim.opt.iskeyword:remove("_")
 vim.o.omnifunc = "v:lua.vim.lsp.omnifunc"
 vim.o.completeopt = "menuone,noselect"
-vim.o.makeprg = "make --quiet"
+vim.o.makeprg = "make" --quiet
 vim.o.grepprg = "rg --vimgrep --smart-case --no-ignore --follow"
 
 function _G.my_find(text, _)
@@ -38,14 +38,6 @@ end
 
 vim.opt.findfunc = "v:lua.my_find"
 
-vim.opt.list = true
-vim.opt.listchars = {
-    space = "•",
-    tab = "▸ ",
-    extends = '❯',
-    precedes = '❮',
-    nbsp = '␣',
-}
 vim.opt.fillchars = { eob = " ", vert = " ", horiz = " " }
 
 function Git_branch()
@@ -111,10 +103,11 @@ map("n", "<leader>b", ":b#<CR>")
 map("n", "<leader>B", ":%bdelete<CR>")
 map("n", "<leader>f", ":find ")
 map("n", "<leader>h", ":help ")
-
 map("n", "<leader>c", ":copen<CR>")
 map("n", "<leader>m", ":make<CR>")
 map("n", "<leader>g", ":grep ")
+map("n", "<leader>e", ":e ")
+map("n", "<leader>t", ":enew<CR>:terminal<CR>i")
 
 map({"n", "v", "x", "c", "t"}, "<C-y>", '"+y', {})
 map({"n", "v", "x", "c", "t"}, "<C-p>", '"+p', {})
@@ -131,7 +124,7 @@ map("n", "<leader>!", ":q!<CR>", {})
 map("n", "<leader>q", ":bd!<CR>", {})
 map("n", "<leader>s", ":w<CR>:so<CR>", {})
 
-map("n", "-", "<cmd>Oil<CR>", {})
+map("n", "-", ":Oil<CR>", {})
 
 vim.api.nvim_create_autocmd("CmdwinEnter", {
   callback = function()
@@ -153,27 +146,27 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.pack.add({
-    { src = "https://github.com/stevearc/oil.nvim" } -- possibly migrate to netrw
+    "https://github.com/stevearc/oil.nvim",
 })
 
 require("oil").setup({
-    default_file_explorer = true,
-    skip_confirm_for_simple_edits = true,
-    watch_for_changes = true,
-    view_options = {
-        show_hidden = true,
-    },
-    columns = {
-        "icon",
-        "type",
-        "permissions",
-        "size",
-        "mtime",
-    },
-    keymaps = {
-        ["g."] = { "actions.toggle_hidden", mode = "n" },
-        ["g,"] = { "actions.cd", mode = "n" }
-    }
+   default_file_explorer = true,
+   skip_confirm_for_simple_edits = true,
+   watch_for_changes = true,
+   view_options = {
+       show_hidden = true,
+   },
+   columns = {
+       "icon",
+       "type",
+       "permissions",
+       "size",
+       "mtime",
+   },
+   keymaps = {
+       ["g."] = { "actions.toggle_hidden", mode = "n" },
+       ["g,"] = { "actions.cd", mode = "n" }
+   }
 })
 
 local servers = { "luals", "ts_ls", "clangd", "cssls", "gopls" }
