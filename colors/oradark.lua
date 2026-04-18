@@ -56,7 +56,7 @@ local groups = {
     Repeat = { fg = colors.grey, bold = true },
     Label = { fg = colors.grey, bold = true },
     SpecialChar = { fg = colors.orange },
-    Todo = { fg = colors.grey, bold = true, bg = "NONE" },
+    Todo = { fg = colors.grey, italic = false, bg = "NONE" },
 
     -- Lsp
     DiagnosticError = { sp = colors.red },
@@ -134,6 +134,15 @@ local groups = {
     -- Markdown
     ["@markup.heading"] = { fg = colors.orange },
     ["@markup.list.checked.markdown"] = { fg = colors.orange },
+}
+
+vim.opt.list = true
+vim.opt.listchars = {
+    space = "•",
+    tab = "▸ ",
+    extends = '❯',
+    precedes = '❮',
+    nbsp = '␣',
 }
 
 for group, opts in pairs(groups) do

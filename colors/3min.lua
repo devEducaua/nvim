@@ -1,8 +1,8 @@
 
 local colors = {
-    bg =  "#181818",
+    bg =  "#000000",
     fg =  "#aaaaaa",
-    comment =  "#444444",
+    comment =  "#777777",
     string =  "#268038"
 }
 
@@ -38,7 +38,7 @@ local groups = {
     Type = { fg = colors.fg },
     Constant = { fg = colors.fg },
     Statement = { fg = colors.fg},
-    MatchParen = { bg = colors.fg },
+    MatchParen = { bg = colors.fg, fg = colors.bg },
     Title = { fg = colors.fg },
     Boolean = { fg = colors.fg },
     Operator = { fg = colors.fg },
@@ -46,7 +46,7 @@ local groups = {
     Repeat = { fg = colors.fg},
     Label = { fg = colors.fg},
     SpecialChar = { fg = colors.fg },
-    Todo = { fg = colors.fg, bg = "NONE", bold = false },
+    Todo = { fg = colors.comment, bg = "NONE", italic = false },
 
     -- Lsp
     DiagnosticError = { sp = colors.fg },
