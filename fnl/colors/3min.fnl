@@ -51,6 +51,7 @@
     :SpecialChar {:fg colors.fg}
     :Statement {:fg colors.fg}
     :Operator {:fg colors.fg}
+    :PreProc {:fg colors.fg}
 
     ;; diagnostics
     :DiagnosticError {:sp colors.fg}
