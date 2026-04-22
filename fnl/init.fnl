@@ -63,31 +63,32 @@
 (fn map [mode key cmd]
   (vim.keymap.set mode key cmd {:silent true :noremap true}))
 
+(macro nmap [key cmd]
+    `(map ["n"] ,key ,cmd))
+
 (map ["i" "v" "t" ] "jk" "<esc>")
 (map ["n" "v" "x" "c" "t"] "<C-y>" "\"+y")
 (map ["n" "v" "x" "c" "t"] "<C-p>" "\"+p")
 (map ["i"] "<C-p>" "<esc>\"+pa")
 
-(map ["n"] "<leader>w" ":update<CR>")
-(map ["n"] "<leader>x" ":x<CR>:Oil<CR>")
-(map ["n"] "<leader>q" ":bd!<CR>")
+(nmap "<leader>w" ":update<CR>")
+(nmap "<leader>x" ":x<CR>:Oil<CR>")
+(nmap "<leader>q" ":bd!<CR>")
 
-(map ["n"] "<leader>ls" ":ls<CR>")
-(map ["n"] "<leader>b" ":b#<CR>")
-(map ["n"] "<leader>B" ":%bdelete<CR>")
-(map ["n"] "<leader>c" ":copen<CR>")
-(map ["n"] "<leader>m" ":make<CR>")
-(map ["n"] "<leader>f" ":find ")
-(map ["n"] "<leader>h" ":help ")
-(map ["n"] "<leader>g" ":grep ")
-(map ["n"] "<leader>e" ":e ")
+(nmap "<leader>ls" ":ls<CR>")
+(nmap "<leader>b" ":b#<CR>")
+(nmap "<leader>B" ":%bdelete<CR>")
+(nmap "<leader>c" ":copen<CR>")
+(nmap "<leader>m" ":make<CR>")
+(nmap "<leader>f" ":find ")
+(nmap "<leader>h" ":help ")
+(nmap "<leader>g" ":grep ")
+(nmap "<leader>e" ":e ")
 
-(map ["n"] "<C-d>" "<C-d>zz")
-(map ["n"] "<C-u>" "<C-u>zz")
-(map ["n"] "<C-f>" "<C-f>zz")
-(map ["n"] "<C-b>" "<C-b>zz")
+(nmap "-" ":Oil<CR>")
 
-(map ["n"] "-" ":Oil<CR>")
+(each [_ k (ipairs [:<C-d> :<C-u> :<C-f> :<C-b>])]
+    (nmap k (.. k "zz")))
 
 (vim.api.nvim_create_autocmd "FileType" {
     :pattern [ "help" "man"]
@@ -112,7 +113,7 @@
           (vim.keymap.set ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))
     })
 
-(lambda configure_lsp [server cmd filetypes markers ?settings]
+(lambda configure_lsp [server [cmd filetypes markers ?settings]]
   (let [cfg {
         :cmd cmd
         :filetypes filetypes
@@ -121,12 +122,11 @@
       (tset cfg :settings ?settings))
     (tset vim.lsp.config server cfg)))
 
-(configure_lsp "gopls" 
-       [(vim.fs.normalize "~/.config/go/bin/gopls")] [ "go" "gomod" ] [ "go.mod" "go.sum" ] )
+(local lsps {
+    :gopls [[(vim.fs.normalize "~/.config/go/bin/gopls")] [ "go" "gomod" ] [ "go.mod" "go.sum" ]]
+    :clangd [["clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ]]})
 
-(configure_lsp "clangd" [ "clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ] )
-
-(vim.lsp.enable ["gopls" "clangd"])
-
-(print "fennel config loaded")
+(each [k v (pairs lsps)]
+  (configure_lsp k v)
+  (vim.lsp.enable k))
 
