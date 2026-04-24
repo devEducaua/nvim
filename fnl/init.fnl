@@ -84,6 +84,7 @@
 (nmap "<leader>h" ":help ")
 (nmap "<leader>g" ":grep ")
 (nmap "<leader>e" ":e ")
+(nmap "<leader>t" ":enew<CR>:terminal<CR>i")
 
 (nmap "-" ":Oil<CR>")
 
@@ -93,6 +94,10 @@
 (vim.api.nvim_create_autocmd "FileType" {
     :pattern [ "help" "man"]
     :command "wincmd L"})
+
+(vim.api.nvim_create_autocmd "BufEnter" {
+    :pattern ["*.md"]
+    :command "set linebreak"})
 
 (vim.pack.add ["https://github.com/stevearc/oil.nvim"])
 (let [oil (require :oil)]
@@ -113,7 +118,16 @@
           (vim.keymap.set ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))
     })
 
-(lambda configure_lsp [server [cmd filetypes markers ?settings]]
+(fn get-license [d]
+  (vim.cmd "vsplit | terminal licenses.sh"))
+
+(fn tabs-to-spaces []
+  (vim.cmd "%s\t/   /g"))
+
+(vim.api.nvim_create_user_command "License" get-license {})
+(vim.api.nvim_create_user_command "White" tabs-to-spaces {})
+
+(lambda configure-lsp [server [cmd filetypes markers ?settings]]
   (let [cfg {
         :cmd cmd
         :filetypes filetypes
@@ -127,6 +141,6 @@
     :clangd [["clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ]]})
 
 (each [k v (pairs lsps)]
-  (configure_lsp k v)
+  (configure-lsp k v)
   (vim.lsp.enable k))
 

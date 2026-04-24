@@ -1,6 +1,6 @@
 # nvim setup
 
-this is my **/**comfy**/** nvim setup.
+this is my comfy nvim setup.
 
 this config is written in [fennel](https://fennel-lang.org).
 
