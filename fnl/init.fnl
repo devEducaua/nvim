@@ -60,33 +60,40 @@
         (lua "return ___antifnl_rtn_1___")))
     ""))	
 
-(fn map [mode key cmd]
-  (vim.keymap.set mode key cmd {:silent true :noremap true}))
+(fn map [mode key cmd ?settings]
+    (var opts {:silent true :noremap true})
+    (when ?settings
+      (set opts ?settings))
+    (vim.keymap.set mode key cmd opts))
 
-(macro nmap [key cmd]
-    `(map ["n"] ,key ,cmd))
+(macro nmap [key cmd settings]
+    `(map ["n"] ,key ,cmd ,settings))
+
+(macro map-cmd [key cmd]
+    `(nmap ,(.. "<leader>" key) ,cmd ,{:nowait true}))
 
 (map ["i" "v" "t" ] "jk" "<esc>")
 (map ["n" "v" "x" "c" "t"] "<C-y>" "\"+y")
 (map ["n" "v" "x" "c" "t"] "<C-p>" "\"+p")
 (map ["i"] "<C-p>" "<esc>\"+pa")
 
+(map ["t"] "<leader><esc>" "<c-\\><c-n>")
+
 (nmap "<leader>w" ":update<CR>")
 (nmap "<leader>x" ":x<CR>:Oil<CR>")
 (nmap "<leader>q" ":bd!<CR>")
 
 (nmap "<leader>ls" ":ls<CR>")
-(nmap "<leader>b" ":b#<CR>")
 (nmap "<leader>B" ":%bdelete<CR>")
-(nmap "<leader>c" ":copen<CR>")
-(nmap "<leader>m" ":make<CR>")
-(nmap "<leader>f" ":find ")
-(nmap "<leader>h" ":help ")
-(nmap "<leader>g" ":grep ")
-(nmap "<leader>e" ":e ")
 (nmap "<leader>t" ":enew<CR>:terminal<CR>i")
 
-(nmap "-" ":Oil<CR>")
+(map-cmd "f" ":find ")
+(map-cmd "h" ":help ")
+(map-cmd "g" ":grep ")
+(map-cmd "e" ":edit ")
+(map-cmd "b" ":buffer ")
+
+(nmap "-" ":Explore<CR>")
 
 (each [_ k (ipairs [:<C-d> :<C-u> :<C-f> :<C-b>])]
     (nmap k (.. k "zz")))
@@ -99,15 +106,21 @@
     :pattern ["*.md"]
     :command "set linebreak"})
 
-(vim.pack.add ["https://github.com/stevearc/oil.nvim"])
-(let [oil (require :oil)]
-    (oil.setup {
-       :default_file_explorer true
-       :skip_confirm_for_simple_edits true
-       :watch_for_changes true
-       :view_options { :show_hidden true }
-       :columns [ "icons" "type" "permissions" "size" "mtime" ]
-    }))
+(vim.filetype.add 
+  {:extension 
+    { :fnl "scheme"}})
+
+;; plugin
+;(vim.pack.add ["https://github.com/stevearc/oil.nvim"])
+;(let [oil (require :oil)]
+;    (oil.setup {
+;       :default_file_explorer true
+;       :skip_confirm_for_simple_edits true
+;       :watch_for_changes true
+;       :view_options { :show_hidden true }
+;       :columns [ "icons" "type" "permissions" "size" "mtime" ]
+;    }))
+;(nmap "-" ":Oil<CR>")
 
 (vim.api.nvim_create_autocmd "LspAttach"
     {:callback 
@@ -122,8 +135,20 @@
   (vim.cmd "vsplit | terminal licenses.sh"))
 
 (fn tabs-to-spaces []
-  (vim.cmd "%s\t/   /g"))
+    (vim.cmd "%s\t/   /g"))
 
+(fn delete-pack []
+    (local packs (vim.pack.get))
+    (local names 
+        (icollect [_ p (ipairs packs)]
+            p.spec.name))
+    (vim.ui.select names
+       { :prompt "pack:"} 
+       (fn [choice] 
+	 (when choice
+	     (vim.pack.del [choice])))))
+
+(vim.api.nvim_create_user_command "DeletePack" delete-pack {})
 (vim.api.nvim_create_user_command "License" get-license {})
 (vim.api.nvim_create_user_command "White" tabs-to-spaces {})
 
@@ -138,7 +163,8 @@
 
 (local lsps {
     :gopls [[(vim.fs.normalize "~/.config/go/bin/gopls")] [ "go" "gomod" ] [ "go.mod" "go.sum" ]]
-    :clangd [["clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ]]})
+    :clangd [["clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ]]
+    :rust-analyzer [[(vim.fs.normalize "~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer")] [ "rust" ] [ "Cargo.toml" "target" ".git" ]]})
 
 (each [k v (pairs lsps)]
   (configure-lsp k v)
