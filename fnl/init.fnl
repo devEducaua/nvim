@@ -85,6 +85,7 @@
 
 (nmap "<leader>ls" ":ls<CR>")
 (nmap "<leader>B" ":%bdelete<CR>")
+(nmap "<leader>c" ":copen<CR>")
 (nmap "<leader>t" ":enew<CR>:terminal<CR>i")
 
 (map-cmd "f" ":find ")
