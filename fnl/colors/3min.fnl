@@ -13,7 +13,8 @@
     ;; normal
     :Normal {:bg colors.bg :fg colors.fg}
     :LineNr {:fg colors.fg}
-    :CurSearch {:bg colors.fg :fg colors.fg}
+    :Search {:bg colors.comment :fg colors.bg}
+    :CurSearch {:bg colors.comment :fg colors.bg}
     :Cursor {:bg colors.fg :fg colors.fg}
     :CursorLine {:bg colors.non_text}
     :Changed {:fg colors.fg}
@@ -97,6 +98,7 @@
     :OilTrashSourcePath {:fg colors.fg}
     :Oilfile {:fg colors.fg}
     :OilfileHidden {:fg colors.fg}
+
     :ErrorMsg {:fg colors.fg}
     :ModeMsg {:fg colors.fg}
     :MoreMsg {:fg colors.fg}
