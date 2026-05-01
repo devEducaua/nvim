@@ -8,6 +8,3 @@ to use it you need to build first:
 ```sh
 make
 ```
-
-plugins:
-- [oil.nvim](https://github.com/stevearc/oil.nvim)
