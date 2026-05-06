@@ -1,5 +1,5 @@
 
-FENNEL ?= $(HOME)/sources/fennel-1.6.1-x86_64
+FENNEL ?= $(HOME)/sou/fennel-1.6.1-x86_64
 
 COLSRC := $(wildcard fnl/colors/*.fnl)
 COLOUT := $(patsubst fnl/colors/%.fnl,colors/%.lua,$(COLSRC))
