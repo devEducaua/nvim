@@ -1,4 +1,37 @@
 
+(macro custom-command [n f ?a]
+    (var a {})
+    (when ?a
+      (tset a :nargs ?a))
+    `(vim.api.nvim_create_user_command ,n ,f ,a))
+
+(macro map [mode key cmd ?settings]
+    (var opts {:silent true :noremap true})
+    (when ?settings
+      (set opts ?settings))
+    `(vim.keymap.set ,mode ,key ,cmd ,opts))
+
+(macro nmap [key cmd settings]
+    `(map ["n"] ,key ,cmd ,settings))
+
+(macro map-cmd [key cmd]
+    `(nmap ,(.. "<leader>" key) ,cmd ,{:nowait true}))
+
+(vim.pack.add 
+    ["https://github.com/neovim-treesitter/nvim-treesitter"
+    "https://github.com/neovim-treesitter/treesitter-parser-registry"
+    "https://codeberg.org/mfussenegger/nvim-dap"
+    "https://github.com/leoluz/nvim-dap-go"
+    ;"https://github.com/stevearc/oil.nvim"
+    "https://github.com/Olical/conjure"])
+
+(local dap-go (require :dap-go))
+(dap-go.setup 
+  {:delve
+    { :path (vim.fs.normalize "~/.config/go/bin/dlv")}})
+
+(require :nvim-treesitter.install ["go" "markdown" "json"])
+
 (vim.cmd.colorscheme "3min")
 
 (set vim.o.number true)
@@ -35,30 +68,8 @@
 (set vim.o.completeopt "menuone,noselect")
 (set vim.o.omnifunc "v:lua.vim.lsp.omnifunc")
 
-(set vim.opt.findfunc "v:lua.find")
-
-(fn _G.find [text _]
-    (let [files (vim.fn.glob "**/*" true true)]
-      (vim.fn.matchfuzzy files text)))
-
-(set vim.o.statusline
-  "%t%r%h%q%m %= %3l:%-2c %{&filetype}")
-
-(vim.diagnostic.config {
-    :virtual_text {:current_line true}
-    :virtual_lines false})
-
-(macro map [mode key cmd ?settings]
-    (var opts {:silent true :noremap true})
-    (when ?settings
-      (set opts ?settings))
-    `(vim.keymap.set ,mode ,key ,cmd ,opts))
-
-(macro nmap [key cmd settings]
-    `(map ["n"] ,key ,cmd ,settings))
-
-(macro map-cmd [key cmd]
-    `(nmap ,(.. "<leader>" key) ,cmd ,{:nowait true}))
+(set vim.opt.findfunc "v:lua.find") ;; can add a keymap to change it dynamic
+(set vim.o.statusline "%t%r%h%q%m %= %3l:%-2c %{&filetype}")
 
 (map ["i" "v" "t" ] "jk" "<esc>")
 (map ["n" "v" "x" "c" "t"] "<C-y>" "\"+y")
@@ -89,23 +100,13 @@
 (each [_ k (ipairs [:<C-d> :<C-u> :<C-f> :<C-b>])]
     (nmap k (.. k "zz")))
 
+(vim.diagnostic.config {
+    :virtual_text {:current_line true}
+    :virtual_lines false})
+
 (vim.filetype.add 
   {:extension 
     { :fnl "scheme"}})
-
-(vim.pack.add 
-    ["https://github.com/neovim-treesitter/nvim-treesitter"
-    "https://github.com/neovim-treesitter/treesitter-parser-registry"
-    "https://codeberg.org/mfussenegger/nvim-dap"
-    "https://github.com/leoluz/nvim-dap-go"])
-
-(local dap-go (require :dap-go))
-(dap-go.setup 
-  {:delve
-    { :path (vim.fs.normalize "~/.config/go/bin/dlv")}})
-
-(local parsers  ["go" "markdown" "json"])
-(require :nvim-treesitter.install parsers)
 
 (vim.api.nvim_create_autocmd "FileType"
     {:pattern [ "help" "man"]
@@ -116,18 +117,23 @@
     :callback (fn []
         (set vim.o.linebreak true))})
 
-(vim.api.nvim_create_autocmd "FileType"
-    {:pattern parsers
-    :callback (fn [] 
-         (vim.treesitter.start))})
-
 (vim.api.nvim_create_autocmd "LspAttach"
     {:callback 
         (fn [args]
           (local client (assert (vim.lsp.get_client_by_id args.data.client_id)))
-          (vim.keymap.set ["n"] "gli" vim.lsp.buf.implementation { :buffer args.buf })
-          (vim.keymap.set ["n"] "gd" vim.lsp.buf.definition { :buffer args.buf })
-          (vim.keymap.set ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))})
+          (nmap "gli" vim.lsp.buf.implementation { :buffer args.buf })
+          (nmap "gd" vim.lsp.buf.definition { :buffer args.buf })
+          (map ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))})
+
+(vim.api.nvim_create_autocmd "FileType"
+    {:pattern ["markdown" "*.md"]
+    :callback (fn [args]
+        (nmap "<A-t>" toggle-todo {:buffer args.buf}))})
+
+(vim.api.nvim_create_autocmd "FileType"
+    {:pattern ["markdown" "*.md"]
+    :callback (fn [] 
+         (vim.treesitter.start))})
 
 (fn get-license [d]
     (local licenses 
@@ -151,11 +157,9 @@
           (set line (line:gsub "%[x%]" "[ ]" 1))
         (print "not a md todo line"))
     (vim.api.nvim_set_current_line line))
-
-(vim.api.nvim_create_autocmd "FileType"
-    {:pattern ["markdown" "*.md"]
-    :callback (fn [args]
-        (nmap "<A-t>" toggle-todo {:buffer args.buf}))})
+(fn _G.find [text _]
+    (let [files (vim.fn.glob "**/*" true true)]
+      (vim.fn.matchfuzzy files text)))
 
 (fn delete-pack []
     (local packs (vim.pack.get))
@@ -173,16 +177,6 @@
       (vim.fn.mkdir folder "p")
       (vim.cmd (.. ":badd " folder))))
 
-(macro custom-command [n f ?a]
-    (var a {})
-    (when ?a
-      (tset a :nargs ?a))
-    `(vim.api.nvim_create_user_command ,n ,f ,a))
-
-(custom-command "ProjectNote" project-note)
-(custom-command "DeletePack" delete-pack)
-(custom-command "License" get-license 1)
-
 (fn configure-lsp [server [cmd filetypes markers ?settings]]
   (let [cfg {
         :cmd cmd
@@ -192,6 +186,12 @@
       (tset cfg :settings ?settings))
     (tset vim.lsp.config server cfg)))
 
+
+
+(custom-command "ProjectNote" project-note)
+(custom-command "DeletePack" delete-pack)
+(custom-command "License" get-license 1)
+
 (local lsps {
     :gopls [[(vim.fs.normalize "~/.config/go/bin/gopls")] [ "go" "gomod" ] [ "go.mod" "go.sum" ]]
     :clangd [["clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ]]
@@ -200,4 +200,5 @@
 (each [k v (pairs lsps)]
   (configure-lsp k v)
   (vim.lsp.enable k))
+
 

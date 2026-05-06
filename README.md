@@ -8,3 +8,4 @@ to use it you need to build first:
 ```sh
 make
 ```
+
