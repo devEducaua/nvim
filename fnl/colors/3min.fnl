@@ -64,12 +64,6 @@
     :DiagnosticUnderlineWarn {:sp colors.fg :undercurl true}
     :DiagnosticWarn {:sp colors.fg}
 
-    ;; diff
-    :DiffAdd {:bg colors.fg :fg :NONE}
-    :DiffChange {:bg colors.fg :fg :NONE}
-    :DiffDelete {:bg colors.fg :fg :NONE}
-    :DiffText {:bg colors.fg :fg :NONE}
-
     ;; treesitter
     "@variable" {:fg colors.fg}
 
@@ -103,7 +97,6 @@
     :ModeMsg {:fg colors.fg}
     :MoreMsg {:fg colors.fg}
     :WarningMsg {:fg colors.fg}})
-
 
 (each [group colors (pairs groups)] (vim.api.nvim_set_hl 0 group colors))
 
