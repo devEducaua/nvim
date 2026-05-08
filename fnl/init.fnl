@@ -17,21 +17,6 @@
 (macro map-cmd [key cmd]
     `(nmap ,(.. "<leader>" key) ,cmd ,{:nowait true}))
 
-(vim.pack.add 
-    ["https://github.com/neovim-treesitter/nvim-treesitter"
-    "https://github.com/neovim-treesitter/treesitter-parser-registry"
-    "https://codeberg.org/mfussenegger/nvim-dap"
-    "https://github.com/leoluz/nvim-dap-go"
-    ;"https://github.com/stevearc/oil.nvim"
-    "https://github.com/Olical/conjure"])
-
-(local dap-go (require :dap-go))
-(dap-go.setup 
-  {:delve
-    { :path (vim.fs.normalize "~/.config/go/bin/dlv")}})
-
-(require :nvim-treesitter.install ["go" "markdown" "json"])
-
 (vim.cmd.colorscheme "3min")
 
 (set vim.o.number true)
@@ -60,8 +45,8 @@
 (set vim.o.wildmenu true)
 (set vim.o.ignorecase true)
 (set vim.o.smartcase true)
-(set vim.o.fileignorecase true)
-(set vim.o.wildignorecase true)
+(set vim.o.fileignorecase false)
+(set vim.o.wildignorecase false)
 (set vim.o.wildoptions "fuzzy")
 (set vim.o.wildmode "longest:full,full")
 (set vim.o.wildignore "*/node_modules/*")
@@ -75,7 +60,6 @@
 (map ["n" "v" "x" "c" "t"] "<C-y>" "\"+y")
 (map ["n" "v" "x" "c" "t"] "<C-p>" "\"+p")
 (map ["i"] "<C-p>" "<esc>\"+pa")
-
 (map ["t"] "<leader><esc>" "<c-\\><c-n>")
 
 (nmap "<leader>w" ":update<CR>")
@@ -84,18 +68,17 @@
 (nmap "<leader>t" ":tabnew<CR>:terminal<CR>i")
 (nmap "<leader>n" ":enew<CR><leader>e" { :remap true })
 
-(map-cmd "f" ":find ")
-(map-cmd "g" ":grep ")
-(map-cmd "e" ":edit ")
-(map-cmd "b" ":buffer ")
-
-(nmap "-" ":Explore<CR>")
-
+(nmap "-" ":Oil<CR>")
 (nmap "<leader>dd" ":DapContinue")
 (nmap "<leader>db" ":DapToggleBreakpoint")
 (nmap "<leader>dr" ":DapToggleRepl")
 (nmap "<leader>dsi" ":DapStepInto")
 (nmap "<leader>dso" ":DapStepOver")
+
+(map-cmd "f" ":find ")
+(map-cmd "g" ":grep ")
+(map-cmd "e" ":edit ")
+(map-cmd "b" ":buffer ")
 
 (each [_ k (ipairs [:<C-d> :<C-u> :<C-f> :<C-b>])]
     (nmap k (.. k "zz")))
@@ -107,33 +90,6 @@
 (vim.filetype.add 
   {:extension 
     { :fnl "scheme"}})
-
-(vim.api.nvim_create_autocmd "FileType"
-    {:pattern [ "help" "man"]
-    :command "wincmd L"})
-
-(vim.api.nvim_create_autocmd "BufEnter" 
-    {:pattern ["*.md"]
-    :callback (fn []
-        (set vim.o.linebreak true))})
-
-(vim.api.nvim_create_autocmd "LspAttach"
-    {:callback 
-        (fn [args]
-          (local client (assert (vim.lsp.get_client_by_id args.data.client_id)))
-          (nmap "gli" vim.lsp.buf.implementation { :buffer args.buf })
-          (nmap "gd" vim.lsp.buf.definition { :buffer args.buf })
-          (map ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))})
-
-(vim.api.nvim_create_autocmd "FileType"
-    {:pattern ["markdown" "*.md"]
-    :callback (fn [args]
-        (nmap "<A-t>" toggle-todo {:buffer args.buf}))})
-
-(vim.api.nvim_create_autocmd "FileType"
-    {:pattern ["markdown" "*.md"]
-    :callback (fn [] 
-         (vim.treesitter.start))})
 
 (fn get-license [d]
     (local licenses 
@@ -149,14 +105,6 @@
             (vim.cmd (.. "!cp " url " ./LICENSE"))
             (vim.cmd (.. "!wget -O LICENSE " url))))))
 
-(fn toggle-todo []
-    (var line (vim.api.nvim_get_current_line))
-    (if (line:match "%[ %]")
-          (set line (line:gsub "%[ %]" "[x]" 1))
-        (line:match "%[x%]")
-          (set line (line:gsub "%[x%]" "[ ]" 1))
-        (print "not a md todo line"))
-    (vim.api.nvim_set_current_line line))
 (fn _G.find [text _]
     (let [files (vim.fn.glob "**/*" true true)]
       (vim.fn.matchfuzzy files text)))
@@ -186,11 +134,41 @@
       (tset cfg :settings ?settings))
     (tset vim.lsp.config server cfg)))
 
-
+(fn toggle-todo []
+    (var line (vim.api.nvim_get_current_line))
+    (if (line:match "%[ %]")
+          (set line (line:gsub "%[ %]" "[x]" 1))
+        (line:match "%[x%]")
+          (set line (line:gsub "%[x%]" "[ ]" 1))
+        (print "toggle-todo: not a md todo line"))
+    (vim.api.nvim_set_current_line line))
 
 (custom-command "ProjectNote" project-note)
 (custom-command "DeletePack" delete-pack)
 (custom-command "License" get-license 1)
+
+(vim.api.nvim_create_autocmd "FileType"
+    {:pattern [ "help" "man"]
+    :command "wincmd L"})
+
+(vim.api.nvim_create_autocmd "BufEnter" 
+    {:pattern ["*.md"]
+    :callback (fn []
+        (set vim.o.linebreak true))})
+
+(vim.api.nvim_create_autocmd "FileType"
+    {:pattern "markdown"
+    :callback (fn [args]
+        (nmap "<A-t>" toggle-todo {:buffer args.buf})
+        (vim.treesitter.start))})
+
+(vim.api.nvim_create_autocmd "LspAttach"
+    {:callback 
+        (fn [args]
+          (local client (assert (vim.lsp.get_client_by_id args.data.client_id)))
+          (nmap "gli" vim.lsp.buf.implementation { :buffer args.buf })
+          (nmap "gd" vim.lsp.buf.definition { :buffer args.buf })
+          (map ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))})
 
 (local lsps {
     :gopls [[(vim.fs.normalize "~/.config/go/bin/gopls")] [ "go" "gomod" ] [ "go.mod" "go.sum" ]]
@@ -201,4 +179,26 @@
   (configure-lsp k v)
   (vim.lsp.enable k))
 
+(vim.pack.add 
+    ["https://github.com/neovim-treesitter/nvim-treesitter"
+    "https://github.com/neovim-treesitter/treesitter-parser-registry"
+    "https://codeberg.org/mfussenegger/nvim-dap"
+    "https://github.com/leoluz/nvim-dap-go"
+    "https://github.com/stevearc/oil.nvim"
+    "https://github.com/Olical/conjure"])
+
+(local dap-go (require :dap-go))
+(dap-go.setup 
+  {:delve
+    { :path (vim.fs.normalize "~/.config/go/bin/dlv")}})
+
+(require :nvim-treesitter.install ["go" "markdown" "json"])
+
+(let [oil (require :oil)]
+  (oil.setup 
+    {:default_file_explorer true
+     :skip_confirm_for_simple_edits true
+     :watch_for_changes true
+     :view_options { :show_hidden true }
+     :columns [ "type" "permissions" "size" "mtime" ]}))
 
