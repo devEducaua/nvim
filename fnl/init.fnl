@@ -159,8 +159,7 @@
 (vim.api.nvim_create_autocmd "FileType"
     {:pattern "markdown"
     :callback (fn [args]
-        (nmap "<A-t>" toggle-todo {:buffer args.buf})
-        (vim.treesitter.start))})
+        (nmap "<A-t>" toggle-todo {:buffer args.buf}))})
 
 (vim.api.nvim_create_autocmd "LspAttach"
     {:callback 
@@ -180,9 +179,7 @@
   (vim.lsp.enable k))
 
 (vim.pack.add 
-    ["https://github.com/neovim-treesitter/nvim-treesitter"
-    "https://github.com/neovim-treesitter/treesitter-parser-registry"
-    "https://codeberg.org/mfussenegger/nvim-dap"
+    ["https://codeberg.org/mfussenegger/nvim-dap"
     "https://github.com/leoluz/nvim-dap-go"
     "https://github.com/stevearc/oil.nvim"
     "https://github.com/Olical/conjure"])
@@ -191,8 +188,6 @@
 (dap-go.setup 
   {:delve
     { :path (vim.fs.normalize "~/.config/go/bin/dlv")}})
-
-(require :nvim-treesitter.install ["go" "markdown" "json"])
 
 (let [oil (require :oil)]
   (oil.setup 
