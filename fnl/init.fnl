@@ -60,7 +60,7 @@
 (map ["n" "v" "x" "c" "t"] "<C-y>" "\"+y")
 (map ["n" "v" "x" "c" "t"] "<C-p>" "\"+p")
 (map ["i"] "<C-p>" "<esc>\"+pa")
-(map ["t"] "<leader><esc>" "<c-\\><c-n>")
+(map ["t"] "<leader>c" "<c-\\><c-n>")
 
 (nmap "<leader>w" ":update<CR>")
 (nmap "<leader>q" ":bd!<CR>")
