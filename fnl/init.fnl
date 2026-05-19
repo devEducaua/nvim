@@ -89,7 +89,8 @@
 
 (vim.filetype.add 
   {:extension 
-    { :fnl "scheme"}})
+    { :fnl "scheme"
+      :nabo "text"}})
 
 (fn get-license [d]
     (local licenses 
@@ -181,13 +182,10 @@
 (vim.pack.add 
     ["https://codeberg.org/mfussenegger/nvim-dap"
     "https://github.com/leoluz/nvim-dap-go"
-    "https://github.com/stevearc/oil.nvim"
-    "https://github.com/Olical/conjure"])
+    "https://github.com/stevearc/oil.nvim"])
 
 (local dap-go (require :dap-go))
-(dap-go.setup 
-  {:delve
-    { :path (vim.fs.normalize "~/.config/go/bin/dlv")}})
+(dap-go.setup)
 
 (let [oil (require :oil)]
   (oil.setup 
