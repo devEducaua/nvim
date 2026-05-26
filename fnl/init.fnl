@@ -126,6 +126,16 @@
       (vim.fn.mkdir folder "p")
       (vim.cmd (.. ":badd " folder))))
 
+(var mymakeprg vim.o.makeprg)
+(fn make-wrapper [d]
+    (var arg d.args)
+    (when (not= arg "")
+      (set mymakeprg arg))
+    (let [bk vim.o.makeprg]
+      (set vim.o.makeprg mymakeprg)
+      (vim.cmd "make")
+      (set vim.o.makeprg bk)))
+
 (fn configure-lsp [server [cmd filetypes markers ?settings]]
   (let [cfg {
         :cmd cmd
@@ -141,12 +151,13 @@
           (set line (line:gsub "%[ %]" "[x]" 1))
         (line:match "%[x%]")
           (set line (line:gsub "%[x%]" "[ ]" 1))
-        (print "toggle-todo: not a md todo line"))
+        (vim.notify "toggle-todo: not a md todo line" vim.log.levels.WARN))
     (vim.api.nvim_set_current_line line))
 
 (custom-command "ProjectNote" project-note)
 (custom-command "DeletePack" delete-pack)
 (custom-command "License" get-license 1)
+(custom-command "Compile" make-wrapper :?)
 
 (vim.api.nvim_create_autocmd "FileType"
     {:pattern [ "help" "man"]
@@ -158,7 +169,7 @@
         (set vim.o.linebreak true))})
 
 (vim.api.nvim_create_autocmd "FileType"
-    {:pattern "markdown"
+    {:pattern ["markdown" "text"]
     :callback (fn [args]
         (nmap "<A-t>" toggle-todo {:buffer args.buf}))})
 
