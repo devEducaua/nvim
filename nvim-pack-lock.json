@@ -1,9 +1,5 @@
 {
   "plugins": {
-    "conjure": {
-      "rev": "2ddd752d43b35d72aa3e339c3ae051b8dbad8549",
-      "src": "https://github.com/Olical/conjure"
-    },
     "nvim-dap": {
       "rev": "45a69eba683a2c448dd9ecfc4de89511f0646b5f",
       "src": "https://codeberg.org/mfussenegger/nvim-dap"
