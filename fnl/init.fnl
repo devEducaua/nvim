@@ -53,7 +53,7 @@
 (set vim.o.completeopt "menuone,noselect")
 (set vim.o.omnifunc "v:lua.vim.lsp.omnifunc")
 
-(set vim.opt.findfunc "v:lua.find") ;; can add a keymap to change it dynamic
+(set vim.opt.findfunc "v:lua.find")
 (set vim.o.statusline "%t%r%h%q%m %= %3l:%-2c %{&filetype}")
 
 (map ["i" "v" "t" ] "jk" "<esc>")
@@ -66,18 +66,10 @@
 (nmap "<leader>q" ":bd!<CR>")
 (nmap "<leader>;" "q:")
 (nmap "<leader>t" ":tabnew<CR>:terminal<CR>i")
-(nmap "<leader>n" ":enew<CR><leader>e" { :remap true })
 
 (nmap "-" ":Oil<CR>")
-(nmap "<leader>dd" ":DapContinue")
-(nmap "<leader>db" ":DapToggleBreakpoint")
-(nmap "<leader>dr" ":DapToggleRepl")
-(nmap "<leader>dsi" ":DapStepInto")
-(nmap "<leader>dso" ":DapStepOver")
 
 (map-cmd "f" ":find ")
-(map-cmd "g" ":grep ")
-(map-cmd "e" ":edit ")
 (map-cmd "b" ":buffer ")
 
 (each [_ k (ipairs [:<C-d> :<C-u> :<C-f> :<C-b>])]
@@ -89,8 +81,7 @@
 
 (vim.filetype.add 
   {:extension 
-    { :fnl "scheme"
-      :nabo "text"}})
+    { :fnl "scheme"}})
 
 (fn get-license [d]
     (local licenses 
@@ -110,6 +101,19 @@
     (let [files (vim.fn.glob "**/*" true true)]
       (vim.fn.matchfuzzy files text)))
 
+(fn _G.gitfind [text _]
+    (let [fnames (vim.fn.systemlist "git ls-files")]
+      (vim.fn.matchfuzzy fnames text)))
+
+(fn change-findfunc [d]
+    (let [arg d.args]
+      (var str "find")
+      (case arg
+        "find" (set str "find")
+        "git" (set str "gitfind"))
+      (let [s (.. "v:lua." str)]
+        (set vim.opt.findfunc s))))
+
 (fn delete-pack []
     (local packs (vim.pack.get))
     (local names 
@@ -124,17 +128,8 @@
 (fn project-note []
     (let [folder (.. vim.env.HOME "/not/prj/" (vim.fs.basename (vim.fn.getcwd)))]
       (vim.fn.mkdir folder "p")
-      (vim.cmd (.. ":badd " folder))))
-
-(var mymakeprg vim.o.makeprg)
-(fn make-wrapper [d]
-    (var arg d.args)
-    (when (not= arg "")
-      (set mymakeprg arg))
-    (let [bk vim.o.makeprg]
-      (set vim.o.makeprg mymakeprg)
-      (vim.cmd "make")
-      (set vim.o.makeprg bk)))
+      (vim.cmd ":enew")
+      (vim.cmd (.. ":edit " folder))))
 
 (fn configure-lsp [server [cmd filetypes markers ?settings]]
   (let [cfg {
@@ -157,7 +152,7 @@
 (custom-command "ProjectNote" project-note)
 (custom-command "DeletePack" delete-pack)
 (custom-command "License" get-license 1)
-(custom-command "Compile" make-wrapper :?)
+(custom-command "ChangeFindFunc" change-findfunc 1)
 
 (vim.api.nvim_create_autocmd "FileType"
     {:pattern [ "help" "man"]
@@ -182,21 +177,17 @@
           (map ["n" "v" "x"] "<leader>lf" vim.lsp.buf.format))})
 
 (local lsps {
-    :gopls [[(vim.fs.normalize "~/.config/go/bin/gopls")] [ "go" "gomod" ] [ "go.mod" "go.sum" ]]
+    :gopls [["gopls"] [ "go" "gomod" ] [ "go.mod" "go.sum" ]]
     :clangd [["clangd"] [ "c" "cpp" ] [ "Makefile" "include" ".git" ]]
+    :ols [[(vim.fs.normalize "~/sou/ols/ols")] [ "odin" ] [ ".git" ]]
     :rust-analyzer [[(vim.fs.normalize "~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer")] [ "rust" ] [ "Cargo.toml" "target" ".git" ]]})
 
 (each [k v (pairs lsps)]
   (configure-lsp k v)
   (vim.lsp.enable k))
 
-(vim.pack.add 
-    ["https://codeberg.org/mfussenegger/nvim-dap"
-    "https://github.com/leoluz/nvim-dap-go"
-    "https://github.com/stevearc/oil.nvim"])
-
-(local dap-go (require :dap-go))
-(dap-go.setup)
+(vim.pack.add
+    ["https://github.com/stevearc/oil.nvim"])
 
 (let [oil (require :oil)]
   (oil.setup 
