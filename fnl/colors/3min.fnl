@@ -37,7 +37,7 @@
     :Identifier {:fg colors.fg}
     :Keyword {:fg colors.fg}
     :Label {:fg colors.fg}
-    :MatchParen {:bg colors.fg :fg colors.bg}
+    ;:MatchParen {:bg colors.comment :fg colors.bg}
     :Method {:fg colors.fg}
     :Number {:fg colors.fg}
     :String {:fg colors.string}
