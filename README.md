@@ -6,6 +6,6 @@ this config is written in [fennel](https://fennel-lang.org).
 
 to use it you need to build first:
 ```sh
-make
+make FENNEL=path/to/your/fennel
 ```
 
