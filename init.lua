@@ -43,11 +43,12 @@ local map = vim.keymap.set
 map({"i", "v", "t"}, "jk", "<esc>")
 map({"n", "v", "x", "c", "t"}, "<C-y>", "\"+y")
 map({"n", "v", "x", "c", "t"}, "<C-p>", "\"+p")
-map("t", "<leader>c", "<c-\\><c-n>")
+map("t", "<A-c>", "<c-\\><c-n>")
 
 map("n", "<leader>w", ":update<CR>")
 map("n", "<leader>q", ":bd!<CR>")
 map("n", "<leader>;", "q:")
+map("n", "<leader>so", ":source $MYVIMRC<CR>")
 
 map("n", "<leader>f", ":find ")
 map("n", "<leader>b", ":buffer ")
@@ -63,7 +64,6 @@ map("n", "<A-h>", "<C-w>h")
 map("n", "<A-j>", "<C-w>j") 
 map("n", "<A-k>", "<C-w>k") 
 map("n", "<A-l>", "<C-w>l") 
-
 
 vim.diagnostic.config({
     virtual_text = {
@@ -121,9 +121,27 @@ function term(d)
     vim.cmd(cmd)
 end
 
+function opendot(path)
+    if not path then
+        print(vim.env.MYVIMRC)
+        return
+    end
+    path = vim.fs.normalize(path)
+    vim.cmd(":enew")
+    --vim.cmd(":tabnew")
+    vim.cmd(":edit " .. path)
+    --vim.cmd(":lcd " .. vim.fs.dirname(path))
+end
+
+function opennote()
+    opendot("~/not")
+end
+
 vim.api.nvim_create_user_command("ProjectNote", project_note, {})
 vim.api.nvim_create_user_command("License", get_license, {nargs = 1})
 vim.api.nvim_create_user_command("Term", term, {nargs = "?", complete = "file"})
+vim.api.nvim_create_user_command("Nvc", opendot, {})
+vim.api.nvim_create_user_command("Not", opennote, {})
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {"help", "man"},
