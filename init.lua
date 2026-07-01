@@ -152,6 +152,23 @@ local function mq_list()
     end, {buffer = buf})
 end
 
+local function git_commit(d)
+    local arg = d.args
+
+    if arg ~= "" then
+        vim.system({"git", "commit", "-m", arg}):wait()
+        return
+    end
+
+    local f = ".git/COMMIT_EDITMSG"
+    vim.cmd.edit(f)
+    vim.api.nvim_create_autocmd("BufDelete", {
+        callback = function()
+            vim.system({"git", "commit", "-F", f}):wait()
+        end
+    })
+end
+
 local function menu()
     local commands = {
         { name = "btop", command = "btop"},
@@ -233,6 +250,7 @@ vim.api.nvim_create_user_command("Nvc", openvimrc, {})
 vim.api.nvim_create_user_command("Not", opennote, {})
 vim.api.nvim_create_user_command("Menu", menu, {})
 vim.api.nvim_create_user_command("Mq", mq_list, {})
+vim.api.nvim_create_user_command("Commit", git_commit, {nargs = "?"})
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {"help", "man"},
