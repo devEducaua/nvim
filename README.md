@@ -2,10 +2,7 @@
 
 this is my comfy nvim setup.
 
-this config is written in [fennel](https://fennel-lang.org).
-
-to use it you need to build first:
-```sh
-make FENNEL=path/to/your/fennel
-```
+- custom theme
+- sometimes plugins, sometimes not
+- just a personal config
 
