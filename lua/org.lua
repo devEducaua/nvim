@@ -1,9 +1,8 @@
-
 local M = {}
 
 local config = {
     headers = {"***", "**", "*"},
-    todos = {"[x]", "[ ]"}
+    todos = {"- TODO ", "- DONE "}
 }
 
 M.setup = function(c)
@@ -20,7 +19,6 @@ local is_header = function(line)
             return p, true
         end
     end
-
     return "", false
 end
 
@@ -78,6 +76,17 @@ M.toggle_todo = function()
 
     advance_cursor(offset)
     vim.api.nvim_set_current_line(new)
+end
+
+M.next_line = function()
+    local line = vim.api.nvim_get_current_line();
+
+    local trimmed = vim.trim(line)
+    local prefix = trimmed:match("^(%S+)", 1)
+    print(prefix)
+
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    vim.api.nvim_buf_set_lines(0, row, row, false, {prefix .. " "})
 end
 
 return M
