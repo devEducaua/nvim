@@ -235,6 +235,17 @@ vim.api.nvim_create_user_command("Menu", menu, {})
 vim.api.nvim_create_user_command("Mq", mq_list, {})
 
 vim.api.nvim_create_autocmd("FileType", {
+    pattern = {"directory"},
+    callback = function()
+        local dir = require("dir")
+        vim.keymap.set("n", "n", dir.new, {buffer = true})
+        vim.keymap.set("n", "d", dir.remove, {buffer = true})
+        vim.keymap.set("n", "m", dir.mkdir, {buffer = true})
+        vim.keymap.set("n", "r", dir.move, {buffer = true})
+    end
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     pattern = {"help", "man"},
     callback = function()
         vim.cmd("wincmd L")
@@ -242,17 +253,23 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = {"*.md"},
-    callback = function()
+	pattern = {"org"},
+	callback = function()
+        vim.wo.foldenable = true
+        vim.wo.foldmethod = "expr"
+        vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+        vim.wo.foldlevel = 99
+	end
+})
 
-        local n = require("notes")
-        n.setup({
-            headers = {"######", "#####", "####", "###", "##", "#"},
-            todos = {"- [ ]", "- [x]"}
-        })
-        map({"n", "i"}, "<A-a>", n.increase_header, {buffer = true})
-        map({"n", "i"}, "<A-x>", n.decrease_header, {buffer = true})
-        map({"n", "i"}, "<A-t>", n.toggle_todo, {buffer = true})
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = {"*.org"},
+    callback = function()
+        local org = require("org")
+        map({"n", "i"}, "<A-a>", org.increase_header, {buffer = true})
+        map({"n", "i"}, "<A-x>", org.decrease_header, {buffer = true})
+        map({"n", "i"}, "<A-t>", org.toggle_todo, {buffer = true})
+        map("n", "<leader><CR>", org.next_line, {buffer = true})
         vim.o.linebreak = true
     end
 })
@@ -317,8 +334,21 @@ vim.lsp.enable({"gopls", "clangd", "jdtls", "ols", "rust-analyzer", "lua_ls"})
 
 vim.pack.add({
     "https://codeberg.org/mfussenegger/nvim-dap",
-    "https://github.com/leoluz/nvim-dap-go"
- })
+    "https://github.com/leoluz/nvim-dap-go",
+    "https://github.com/arborist-ts/arborist.nvim"
+})
+
+require("arborist").setup({
+    update_cadence = "manual",
+    install_popular = false,
+    ensure_installed = {"org", "markdown", "go", "json", "scheme"},
+    overrides = {
+        org = {url="https://github.com/nvim-orgmode/tree-sitter-org"}
+    },
+    ignore = {
+        "nix"
+    }
+})
 
 require("dap-go").setup()
 
