@@ -1,5 +1,13 @@
 local M = {}
 
+M.setup = function()
+    vim.keymap.set("n", "<leader>n", M.new, {buffer = true})
+    vim.keymap.set("n", "<leader>d", M.remove, {buffer = true})
+    vim.keymap.set("n", "<leader>m", M.mkdir, {buffer = true})
+    vim.keymap.set("n", "r", M.move, {buffer = true})
+    vim.keymap.set("n", "a", ":edit %/", { buffer = true})
+end
+
 M.get_file_under_cursor = function()
     local bufname = vim.api.nvim_buf_get_name(0)
     local line = vim.api.nvim_get_current_line()
@@ -11,16 +19,20 @@ M.reload = function()
 end
 
 M.remove = function()
-    local path = M.get_file_under_cursor()
+    local file = M.get_file_under_cursor()
+    local bufname = vim.api.nvim_buf_get_name(0)
+
+    local path = vim.fs.joinpath(bufname, file)
+
     local prompt = "you really want to remove: `" .. path .. "`? (y/n) "
     vim.ui.input({prompt = prompt}, function(choice)
         if choice == "y" then
-            local bufname = vim.api.nvim_buf_get_name(0)
-            print(vim.fs.joinpath(bufname, path))
+            vim.fs.rm(path, { recursive = true })
+        else
+            return
         end
     end)
 
-    vim.fs.rm(path, { recursive = true })
     M.reload()
 end
 

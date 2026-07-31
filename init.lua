@@ -53,18 +53,11 @@ map("n", "<leader>so", ":source $MYVIMRC<CR>")
 map("n", "<leader>f", ":find ")
 map("n", "<leader>b", ":buffer ")
 map("n", "<leader>e", ":edit ")
-map("n", "<leader>t", ":Term ")
 
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 map("n", "<C-f>", "<C-f>zz")
 map("n", "<C-b>", "<C-b>zz")
-
-map("n", "<M-CR>", ":vnew<CR>:wincmd L<CR>")
-map("n", "<M-h>", "<C-w>h")
-map("n", "<M-j>", "<C-w>j")
-map("n", "<M-k>", "<C-w>k")
-map("n", "<M-l>", "<C-w>l")
 
 vim.diagnostic.config({
     virtual_text = {
@@ -108,18 +101,6 @@ local function get_license(d)
     else
         vim.cmd("!wget -O LICNSE " .. url)
     end
-end
-
-local function term(d)
-    local arg = d.args
-    vim.cmd(":vsplit")
-    vim.cmd(":wincmd L")
-
-    local cmd = ":terminal"
-    if arg ~= "" then
-         cmd = cmd .. " " .. arg
-    end
-    vim.cmd(cmd)
 end
 
 local function mq_list()
@@ -198,79 +179,14 @@ local function menu()
     end, {buffer = buf})
 end
 
---local function cli_wrapper(command, outputs, arg)
---    local f = arg:match("^(%S+)") or ""
---    for _,v in ipairs(outputs) do
---        if v == f then
---            vim.cmd.vnew()
---            vim.cmd.wincmd("L")
---            vim.cmd.terminal(command .. " " .. arg)
---            return
---        end
---    end
---    vim.cmd("!" .. command .. " " .. arg)
---end
-
-local function opendot(path)
-    vim.cmd(":enew")
-    --vim.cmd(":tabnew")
-    vim.cmd(":edit " .. path)
-    --vim.cmd(":lcd " .. vim.fs.dirname(path))
-end
-
-local function opennote()
-    opendot(vim.fs.normalize("~/not"))
-end
-
-local function openvimrc()
-    opendot(vim.env.MYVIMRC)
-end
-
-vim.api.nvim_create_user_command("ProjectNote", project_note, {})
 vim.api.nvim_create_user_command("License", get_license, {nargs = 1})
-vim.api.nvim_create_user_command("Term", term, {nargs = "?", complete = "file"})
-vim.api.nvim_create_user_command("Nvc", openvimrc, {})
-vim.api.nvim_create_user_command("Not", opennote, {})
 vim.api.nvim_create_user_command("Menu", menu, {})
 vim.api.nvim_create_user_command("Mq", mq_list, {})
-
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = {"directory"},
-    callback = function()
-        local dir = require("dir")
-        vim.keymap.set("n", "n", dir.new, {buffer = true})
-        vim.keymap.set("n", "d", dir.remove, {buffer = true})
-        vim.keymap.set("n", "m", dir.mkdir, {buffer = true})
-        vim.keymap.set("n", "r", dir.move, {buffer = true})
-    end
-})
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {"help", "man"},
     callback = function()
         vim.cmd("wincmd L")
-    end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = {"org"},
-	callback = function()
-        vim.wo.foldenable = true
-        vim.wo.foldmethod = "expr"
-        vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-        vim.wo.foldlevel = 99
-	end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = {"*.org"},
-    callback = function()
-        local org = require("org")
-        map({"n", "i"}, "<A-a>", org.increase_header, {buffer = true})
-        map({"n", "i"}, "<A-x>", org.decrease_header, {buffer = true})
-        map({"n", "i"}, "<A-t>", org.toggle_todo, {buffer = true})
-        map("n", "<leader><CR>", org.next_line, {buffer = true})
-        vim.o.linebreak = true
     end
 })
 
@@ -282,7 +198,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-        --local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
         map("n", "gli", vim.lsp.buf.implementation, { buffer = args.buf })
         map("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
         map("n", "glf", vim.lsp.buf.format)
@@ -302,7 +217,7 @@ vim.lsp.config["clangd"] = {
 }
 
 vim.lsp.config["jdtls"] = {
-    cmd = { "jdtls" },
+    cmd = { vim.fs.normalize("~/sou/jdt/bin/jdtls") },
     filetypes = {"java"},
     root_markers = {"pom.xml", "mvnw"}
 }
@@ -314,7 +229,7 @@ vim.lsp.config["ols"] = {
 }
 
 vim.lsp.config["rust-analyzer"] = {
-    cmd = { vim.fs.normalize("~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer") },
+    cmd = { vim.fs.normalize("~/.local/share/rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer") },
     filetypes = {"rust"},
     root_markers = {"Cargo.toml", "target"}
 }
@@ -333,22 +248,22 @@ vim.lsp.config["lua_ls"] = {
 vim.lsp.enable({"gopls", "clangd", "jdtls", "ols", "rust-analyzer", "lua_ls"})
 
 vim.pack.add({
-    "https://codeberg.org/mfussenegger/nvim-dap",
-    "https://github.com/leoluz/nvim-dap-go",
-    "https://github.com/arborist-ts/arborist.nvim"
+    "https://github.com/stevearc/oil.nvim",
 })
 
-require("arborist").setup({
-    update_cadence = "manual",
-    install_popular = false,
-    ensure_installed = {"org", "markdown", "go", "json", "scheme"},
-    overrides = {
-        org = {url="https://github.com/nvim-orgmode/tree-sitter-org"}
+require("oil").setup({
+    default_file_explorer = true,
+    columns = {
+        "icon",
+        "permissions",
+        "size",
+        "mtime",
     },
-    ignore = {
-        "nix"
+    skip_confirm_for_simple_edits = true,
+    watch_for_changes = true,
+    view_options = {
+        show_hidden = true,
+        natural_order = "fast",
     }
 })
-
-require("dap-go").setup()
 

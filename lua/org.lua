@@ -1,5 +1,19 @@
 local M = {}
 
+--
+--vim.api.nvim_create_autocmd("BufEnter", {
+--    pattern = {"*.org"},
+--    callback = function()
+--        local org = require("org")
+--        map({"n", "i"}, "<A-a>", org.increase_header, {buffer = true})
+--        map({"n", "i"}, "<A-x>", org.decrease_header, {buffer = true})
+--        map({"n", "i"}, "<A-t>", org.toggle_todo, {buffer = true})
+--        map("n", "<leader><CR>", org.next_line, {buffer = true})
+--        vim.o.linebreak = true
+--    end
+--})
+--
+
 local config = {
     headers = {"***", "**", "*"},
     todos = {"- TODO ", "- DONE "}
